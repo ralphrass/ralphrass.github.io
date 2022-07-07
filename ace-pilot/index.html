@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ACE in Action</title>
+<style type="text/css" media="screen">
+    
+    /* Full screen */
+    /*#editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }*/
+
+    #editor{
+        display:block;
+        position:relative;
+        width:50%;
+        height:50vh;
+        border:3px solid rgb(0, 0, 255);
+    }
+
+    iframe {
+        /* width: 600vh; */
+        height: 40vh;
+        border-style: 2px solid;
+    }
+
+</style>
+<script>
+
+function getCurrentMode(){
+    var x = document.getElementById("mode");
+    var modeValue = x.options[x.selectedIndex].value;
+
+    return modeValue;
+}
+
+function changeMode() {
+   	var modeValue = getCurrentMode();
+    if (modeValue == "javascript") {
+    	editor.session.setMode("ace/mode/javascript");
+    	editor.setValue("function foo(items) {\n\tvar x = \"All this is syntax highlighted\";\n\treturn x;\n}\n");
+        editor.clearSelection();
+        document.getElementById('run_button').disabled = false;
+        //document.getElementById('langExt').innerHTML = "javascript";
+    } else if (modeValue == "html"){
+        editor.session.setMode("ace/mode/html");
+    	editor.setValue("<html>\n\n<h1>\n\n</h1>\n</html>\n");
+        editor.clearSelection();
+        document.getElementById('run_button').disabled = true;
+        //document.getElementById('langExt').innerHTML = "html";
+
+    }
+}
+
+function download(filename, text) {
+
+    var modeValue = getCurrentMode();
+    var dataType = 'data:text/plain;charset=utf-8,';
+
+    if (modeValue == "javascript"){
+        dataType = 'data:text/javascript;charset=utf-8,';
+    }
+
+    var element = document.createElement('a');
+    element.setAttribute('href', dataType + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function save() {
+
+    var modeValue = getCurrentMode();
+    var fileName = 'arquivo.html';
+
+    if (modeValue == "javascript"){
+        fileName = 'arquivo.js';
+    }
+
+    download(fileName, editor.getValue());
+}
+
+// $(document).ready(function() {
+//     $('.selectpicker').selectpicker();
+//     $('[data-toggle="tooltip"]').tooltip(); 
+// });
+</script>
+</head>
+<body>
+<select class="selectpicker" data-live-search="true" class="form-control" name="Language" id="mode" onchange="changeMode()">
+    <option value="javascript" id="javascript" selected>Javascript</option>
+    <option value="html" id="html">HTML</option>
+</select>
+<button onclick='save()'>Salvar</button>
+<button id="run_button" class="editor__btn editor__run">Rodar</button>
+<button class="editor__btn editor__reset">Resetar</button>
+<button class="editor__btn editor__submit" disabled>Enviar</button>
+<div style="width: 100%; overflow: hidden;">
+    <div id="editor" style="width: 60%; float: left;">function foo(items) {
+        var x = "All this is syntax highlighted";
+        return x;
+    }</div>
+    <div style="margin-left: 400px" class="editor__footer--right">
+        <div class="editor__console">
+            <ul class="editor__console-logs"></ul>
+        </div>
+    </div>
+</div>
+<iframe id='preview' width="100%" scrolling="no" style="overflow: hidden;"></iframe>
+    
+<script src="lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/javascript");
+
+    editor.session.on('change', function(delta) {
+        var preview = document.getElementById('preview').contentWindow.document;
+            preview.open();
+            preview.writeln(editor.getValue());
+            preview.close();
+    });
+
+    //editor.change();
+</script>
+
+<!-- Custom Scripts -->
+<script src="lib/js/editor.js"></script>
+<script src="lib/js/editor-console.js"></script>
+</body>
+</html>
