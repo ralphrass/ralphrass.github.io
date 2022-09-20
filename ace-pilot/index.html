@@ -309,7 +309,7 @@ function send_code(){
                 console.log(xhr.responseText);
 
                 if (JSON.parse(xhr.responseText).hasOwnProperty('error')){
-                    alert('Credenciais inválidas');
+                    alert('Credenciais invï¿½lidas');
                     return;
                 }
                 
@@ -363,7 +363,7 @@ function send_code(){
     </div>
     <div id="navbar-inner">
         <form id="moodle_form">
-            <input type="text" id="moodle_user" placeholder="Usuário Moodle"/>
+            <input type="text" id="moodle_user" placeholder="UsuÃ¡rio Moodle"/>
             <input type="password" id="moodle_pass" placeholder="Senha Moodle"/>
         </form>
         <button id="send_button" class="editor__btn editor__send" onclick="send_code()">Enviar</button>
