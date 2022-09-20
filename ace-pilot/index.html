@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-<title>ACE in Action</title>
+<title>TeuFuturo CodePilot</title>
 <style type="text/css" media="screen">
     
     select {
@@ -87,6 +87,39 @@
         white-space: nowrap;
         word-spacing: 0px;
         writing-mode: horizontal-tb;
+    }
+
+    #send_button{
+        -webkit-font-smoothing: antialiased;
+        align-items: center;
+        appearance: none;
+        background-attachment: scroll;
+        background-clip: border-box;
+        background-color: rgba(0, 0, 0, 0);
+        background-image: none;
+        border-color: rgb(179, 74, 221);
+        border-style: solid;
+        border-width: 2px;
+        box-sizing: border-box;
+        color: rgb(255, 255, 255);
+        display: flex;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-weight: 600;
+        height: 23px;
+        letter-spacing: normal;
+        line-height: 12px;
+        margin-left: 10px;
+        position: relative;
+        text-align: center;
+        text-indent: 0px;
+        text-shadow: none;
+        text-transform: none;
+        vertical-align: bottom;
+        white-space: nowrap;
+        word-spacing: 0px;
+        writing-mode: horizontal-tb;
+        margin-right: 20px;
     }
 
     #salvar{
@@ -252,6 +285,68 @@ function save() {
     download(fileName, editor.getValue());
 }
 
+function send_code(){
+        
+    var user = document.getElementById('moodle_user').value;
+    var pass = document.getElementById('moodle_pass').value;
+
+    if (user == "" && pass == ""){
+        
+        alert('Informe suas credenciais');
+
+    } else {
+
+        var url = "https://teufuturo.adapta.online/login/token.php?service=moodle_mobile_app";
+
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                console.log(xhr.status);
+                console.log(xhr.responseText);
+
+                if (JSON.parse(xhr.responseText).hasOwnProperty('error')){
+                    alert('Credenciais inválidas');
+                    return;
+                }
+                
+                var url = "https://teufuturo.adapta.online/webservice/rest/server.php?moodlewsrestformat=json";
+
+                xhr2 = new XMLHttpRequest();
+                xhr2.open("POST", url);
+                xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                xhr2.onreadystatechange = function () {
+                if (xhr2.readyState === 4) {
+                    //console.log(xhr2.status);
+                    console.log(xhr2.responseText);
+
+                    localStorage.setItem('moodle_user', user);
+                    localStorage.setItem('moodle_pass', pass);
+                    localStorage.setItem('moodle_data', xhr2.responseText);
+                    document.getElementById('moodle_form').style.visibility = 'hidden';
+                }};
+
+                var token = JSON.parse(xhr.responseText)['token'];
+                var data = "wstoken="+token+"&wsfunction=core_webservice_get_site_info";
+                console.log(data);
+
+                xhr2.send(data);
+            }
+        };
+
+        var data = "username="+user+"&password="+pass;
+
+        xhr.send(data);
+    }
+    
+    //if (local_user == null){
+    
+    //}
+}
 // $(document).ready(function() {
 //     $('.selectpicker').selectpicker();
 //     $('[data-toggle="tooltip"]').tooltip(); 
@@ -267,6 +362,11 @@ function save() {
         </select>
     </div>
     <div id="navbar-inner">
+        <form id="moodle_form">
+            <input type="text" id="moodle_user" placeholder="Usuário Moodle"/>
+            <input type="password" id="moodle_pass" placeholder="Senha Moodle"/>
+        </form>
+        <button id="send_button" class="editor__btn editor__send" onclick="send_code()">Enviar</button>
         <button id="run_button" class="editor__btn editor__run">Rodar</button>
         <button id="salvar" onclick='save()'>Salvar</button>
         <button id="reset_button" class="editor__btn editor__reset">Resetar</button>
@@ -291,6 +391,14 @@ function save() {
     
 <script src="lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
+
+    var local_user = localStorage.getItem('moodle_user');
+
+    if (local_user != null){
+
+        document.getElementById('moodle_form').style.visibility = 'hidden';
+    }
+
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/javascript");
