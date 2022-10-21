@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>ACE in Action</title>
+<style type="text/css" media="screen">
+    
+    select {
+        background-color: #1F99CD;
+        background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20256%20448%22%20enable-background%3D%22new%200%200%20256%20448%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E.arrow%7Bfill%3A%23ffcc00%3B%7D%3C%2Fstyle%3E%3Cpath%20class%3D%22arrow%22%20d%3D%22M255.9%20168c0-4.2-1.6-7.9-4.8-11.2-3.2-3.2-6.9-4.8-11.2-4.8H16c-4.2%200-7.9%201.6-11.2%204.8S0%20163.8%200%20168c0%204.4%201.6%208.2%204.8%2011.4l112%20112c3.1%203.1%206.8%204.6%2011.2%204.6%204.4%200%208.2-1.5%2011.4-4.6l112-112c3-3.2%204.5-7%204.5-11.4z%22%2F%3E%3C%2Fsvg%3E%0A);
+        background-position: right 10px center;
+        background-repeat: no-repeat;
+        background-size: auto 50%;
+        border-radius: 2px;
+        border: none;
+        color: #ffffff;
+        padding: 10px 30px 10px 10px;
+        outline: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        }
+        select::-ms-expand {
+        display: none;
+        }
+        @-moz-document url-prefix() {
+        select {
+            color: rgba(0, 0, 0, 0);
+            text-shadow: 0 0 0 #ffffff;
+        }
+        }
+        @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 300;
+        src: url(https://fonts.gstatic.com/s/lato/v23/S6u9w4BMUTPHh7USSwiPHA.ttf) format('truetype');
+        }
+        @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: url(https://fonts.gstatic.com/s/lato/v23/S6uyw4BMUTPHjx4wWw.ttf) format('truetype');
+        }
+        body {
+        font-family: 'Lato', sans-serif;
+        font-weight: 300;
+        background: #34495E;
+        }
+        body select {
+        display: block;
+        }
+
+    /* Full screen */
+    /*#editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }*/
+    #run_button{
+        -webkit-font-smoothing: antialiased;
+        align-items: center;
+        appearance: none;
+        background-attachment: scroll;
+        background-clip: border-box;
+        background-color: rgba(0, 0, 0, 0);
+        background-image: none;
+        border-color: rgb(180, 216, 131);
+        border-style: solid;
+        border-width: 2px;
+        box-sizing: border-box;
+        color: rgb(255, 255, 255);
+        display: flex;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-weight: 600;
+        height: 23px;
+        letter-spacing: normal;
+        line-height: 12px;
+        margin-left: 10px;
+        position: relative;
+        text-align: center;
+        text-indent: 0px;
+        text-shadow: none;
+        text-transform: none;
+        vertical-align: bottom;
+        white-space: nowrap;
+        word-spacing: 0px;
+        writing-mode: horizontal-tb;
+    }
+
+    #salvar{
+        align-items: center;
+        border-bottom-color: rgb(80, 173, 246);
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-bottom-style: solid;
+        border-bottom-width: 2px;
+        color: rgb(255, 255, 255);
+        background-color: rgba(0, 0, 0, 0);
+        margin-left: 10px;
+    }
+        
+
+    body{
+        background: #161a22;
+    }
+
+    #editor{
+        display:block;
+        position:relative;
+        width:50%;
+        height:50vh;
+        border:1px solid gray;
+        resize: both; 
+        overflow: auto;
+    }
+
+    iframe {
+        width: 100%;
+        height: 40vh;
+        border-style: 2px solid;
+        resize: both; 
+        overflow: auto;
+    }
+
+    #navbar-right{
+        -webkit-font-smoothing: antialiased;
+        align-items: center;
+        box-sizing: border-box;
+        color: rgb(255, 255, 255);
+        display: flex;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        height: 60px;
+        position: relative;
+        width: 100%;
+        z-index: 10;
+        background-color: #1e2028;
+        margin-top: 20px;
+    }
+
+    #navbar-inner{
+        align-items: center;
+        display: flex;
+        margin-left: auto;
+        margin-right: 20px;
+    }
+
+    #reset_button{
+        -webkit-font-smoothing: antialiased;
+        align-items: center;
+        appearance: none;
+        background-attachment: scroll;
+        background-clip: border-box;
+        background-color: rgb(32, 150, 243);
+        background-image: none;
+        background-origin: padding-box;
+        background-position-x: 0%;
+        background-position-y: 0%;
+        background-size: auto;
+        border-color: rgb(80, 173, 246);
+        border-style: solid;
+        border-width: 2px;
+        box-sizing: border-box;
+        color: rgb(255, 255, 255);
+        display: block;
+        font-style: normal;
+        font-weight: 600;
+        height: 23px;
+        letter-spacing: normal;
+        line-height: 12px;
+        margin-left: 10px;
+        position: relative;
+        text-align: center;
+        text-transform: none;
+        transition-delay: 0s;
+        transition-duration: 0.1s;
+        transition-property: all;
+        transition-timing-function: ease;
+        white-space: nowrap;
+        word-spacing: 0px;
+        writing-mode: horizontal-tb;
+    }
+
+    .editor__console{
+        color: white;
+        font-weight: bold;
+        height: 100%;
+    }
+</style>
+<script>
+
+function getCurrentMode(){
+    var x = document.getElementById("mode");
+    var modeValue = x.options[x.selectedIndex].value;
+
+    return modeValue;
+}
+
+function changeMode() {
+   	var modeValue = getCurrentMode();
+    if (modeValue == "javascript") {
+    	editor.session.setMode("ace/mode/javascript");
+    	editor.setValue("function foo(items) {\n\tvar x = \"All this is syntax highlighted\";\n\treturn x;\n}\n");
+        editor.clearSelection();
+        document.getElementById('run_button').disabled = false;
+        //document.getElementById('langExt').innerHTML = "javascript";
+    } else if (modeValue == "html"){
+        editor.session.setMode("ace/mode/html");
+    	editor.setValue("<html>\n\n<h1>\n\n</h1>\n</html>\n");
+        editor.clearSelection();
+        document.getElementById('run_button').disabled = true;
+        //document.getElementById('langExt').innerHTML = "html";
+
+    }
+}
+
+function download(filename, text) {
+
+    var modeValue = getCurrentMode();
+    var dataType = 'data:text/plain;charset=utf-8,';
+
+    if (modeValue == "javascript"){
+        dataType = 'data:text/javascript;charset=utf-8,';
+    }
+
+    var element = document.createElement('a');
+    element.setAttribute('href', dataType + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function save() {
+
+    var modeValue = getCurrentMode();
+    var fileName = 'arquivo.html';
+
+    if (modeValue == "javascript"){
+        fileName = 'arquivo.js';
+    }
+
+    download(fileName, editor.getValue());
+}
+
+// $(document).ready(function() {
+//     $('.selectpicker').selectpicker();
+//     $('[data-toggle="tooltip"]').tooltip(); 
+// });
+</script>
+</head>
+<body>
+<div id="navbar-right">
+    <div>
+        <select class="selectpicker" data-live-search="true" class="form-control" name="Language" id="mode" onchange="changeMode()">
+            <option value="javascript" id="javascript" selected>Javascript</option>
+            <option value="html" id="html">HTML</option>
+        </select>
+    </div>
+    <div id="navbar-inner">
+        <button id="run_button" class="editor__btn editor__run">Rodar</button>
+        <button id="salvar" onclick='save()'>Salvar</button>
+        <button id="reset_button" class="editor__btn editor__reset">Resetar</button>
+    </div>
+</div>
+<div style="width: 100%; overflow: hidden;">
+    <div id="editor" style="width: 600px; float: left;">function foo(items) {
+        var x = "All this is syntax highlighted";
+        return x;
+    }</div>
+    <div style="margin-left: 620px;" class="editor__footer--right">
+        <div style="background-color: #1e2028; height: 20px; margin-left: -16px; color: white; opacity: 0.5; font-size: 10px; display: flex; justify-content: left; align-items: center; ">
+            <img src="img/console_white.png" width="20px"/>
+            Console
+        </div>
+        <div class="editor__console">
+            <ul class="editor__console-logs"></ul>
+        </div>
+    </div>
+</div>
+<iframe id='preview' style="background: white;"></iframe>
+    
+<script src="lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/javascript");
+
+    editor.session.on('change', function(delta) {
+        var preview = document.getElementById('preview').contentWindow.document;
+            preview.open();
+            preview.writeln(editor.getValue());
+            preview.close();
+    });
+
+    //editor.change();
+    const BORDER_SIZE = 4;
+    const panel = document.getElementById("right_panel");
+
+    /*let m_pos;
+    function resize(e){
+    const dx = m_pos - e.x;
+    m_pos = e.x;
+    panel.style.width = (parseInt(getComputedStyle(panel, '').width) + dx) + "px";
+    }
+
+    panel.addEventListener("mousedown", function(e){
+    if (e.offsetX < BORDER_SIZE) {
+        m_pos = e.x;
+        document.addEventListener("mousemove", resize, false);
+    }
+    }, false);
+
+    document.addEventListener("mouseup", function(){
+        document.removeEventListener("mousemove", resize, false);
+    }, false);*/
+</script>
+
+<!-- Custom Scripts -->
+<script src="lib/js/editor.js"></script>
+<script src="lib/js/editor-console.js"></script>
+</body>
+</html>
