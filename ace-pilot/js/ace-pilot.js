@@ -60,16 +60,24 @@ function save() {
     download(fileName, editor.getValue());
 }
 
-function validate_moodle_user(){
+function validate_moodle_user_and_send_code(){
 
     var user = document.getElementById('moodle_user').value;
     var pass = document.getElementById('moodle_pass').value;
 
-    if (user == "" && pass == ""){
+    var stored_user = localStorage.getItem("moodle_user");
+    var stored_pass = localStorage.getItem("moodle_pass");
+
+    if (stored_user == null && user == "" && pass == ""){
         
         alert('Informe suas credenciais');
 
     } else {
+
+        user = stored_user
+        pass = stored_pass
+
+        console.log("Autenticando...");
 
         var url = "https://teufuturo.adapta.online/login/token.php?service=moodle_mobile_app";
 
@@ -80,13 +88,15 @@ function validate_moodle_user(){
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                console.log(xhr.status);
-                console.log(xhr.responseText);
+                //console.log(xhr.status);
+                //console.log(xhr.responseText);
 
                 if (JSON.parse(xhr.responseText).hasOwnProperty('error')){
                     alert('Credenciais inválidas');
                     return;
                 }
+
+                console.log("Autenticado! Obtendo dados do Moodle...");
                 
                 var url = "https://teufuturo.adapta.online/webservice/rest/server.php?moodlewsrestformat=json";
 
@@ -97,12 +107,44 @@ function validate_moodle_user(){
                 xhr2.onreadystatechange = function () {
                 if (xhr2.readyState === 4) {
                     //console.log(xhr2.status);
-                    console.log(xhr2.responseText);
+                    //console.log(xhr2.responseText);
+
+                    console.log("Dados do Moodle obtidos!");
 
                     localStorage.setItem('moodle_user', user);
                     localStorage.setItem('moodle_pass', pass);
                     localStorage.setItem('moodle_data', xhr2.responseText);
                     document.getElementById('moodle_form').style.visibility = 'hidden';
+                    
+                    var user_code = editor.getValue();
+                    var url3 = "http://localhost/php_api/teufuturo/SendCode"
+                    xhr3 = new XMLHttpRequest();
+                    xhr3.open("POST", url3);
+                    xhr3.setRequestHeader("Content-Type", "application/json"); // x-www-form-urlencoded
+                    xhr3.setRequestHeader("Access-Control-Allow-Origin", "*");
+                    xhr3.setRequestHeader("Access-Control-Allow-Headers", "X-API-KEY, Origin, X-Requested-With, content-type, accept, Access-Control-Request-Method");
+                    xhr3.setRequestHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+                    xhr3.setRequestHeader("Access-Control-Max-Age", "1728000");
+
+                    xhr3.onreadystatechange = function () {
+                        if (xhr3.readyState === 4) { //  && xhr3.status === 201
+
+                            document.write(xhr3.responseText);
+                        }
+                    }
+
+                    var json_response = JSON.parse(xhr2.responseText);
+                    var moodle_id = json_response.userid;
+                    var user_fullname = json_response.fullname;
+
+                    xhr3.onreadystatechange = function () {
+                        if (xhr3.readyState === 4) { //  && xhr3.status === 201
+                
+                            console.log(xhr3.responseText);
+                        }
+                    }
+
+                    xhr3.send(JSON.stringify({ "code": user_code, "user": user, "fullname": user_fullname, "moodle_id": moodle_id }));
                 }};
 
                 var token = JSON.parse(xhr.responseText)['token'];
@@ -121,10 +163,8 @@ function validate_moodle_user(){
 
 function send_code(){
         
-    validate_moodle_user();
+    validate_moodle_user_and_send_code();
 
-    var user_code = editor.getValue();
-    
     //if (local_user == null){
     
     //}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<title>Testing TeuFuturo CodePilot</title>
+<!--<style type="text/css" media="screen" ></style>-->
+<script>
+
+    var user_code = "editor.getValue()";
+    var url3 = "http://localhost/php_api/teufuturo/SendCode"
+    xhr3 = new XMLHttpRequest();
+    xhr3.open("POST", url3);
+    xhr3.setRequestHeader("Content-Type", "application/json"); // x-www-form-urlencoded
+    xhr3.setRequestHeader("Access-Control-Allow-Origin", "*");
+    xhr3.setRequestHeader("Access-Control-Allow-Headers", "X-API-KEY, Origin, X-Requested-With, content-type, accept, Access-Control-Request-Method");
+    xhr3.setRequestHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+    xhr3.setRequestHeader("Access-Control-Max-Age", "1728000");
+
+    xhr3.onreadystatechange = function () {
+        if (xhr3.readyState === 4) { //  && xhr3.status === 201
+
+            document.write(xhr3.responseText);
+        }
+    }
+
+    user_code = `function foo(items) {
+        var x = \"All this is syntax highlighted\";
+        return x;
+    }`;
+    user = "ralph.rassweiler";
+    user_fullname = "Ralph Rassweiler";
+    moodle_id = 285;
+
+    xhr3.send(JSON.stringify({ "code": user_code, "user": user, "fullname": user_fullname, "moodle_id": moodle_id }));
+
+</script>
+</head>
+<body>
+</body>
+</html>
