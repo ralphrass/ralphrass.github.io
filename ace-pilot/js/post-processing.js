@@ -4,11 +4,17 @@ var local_user = localStorage.getItem('moodle_user');
 if (local_user != null){
 
     document.getElementById('moodle_form').style.visibility = 'hidden';
+    document.getElementById('moodle_form').style.width = 0;   
 }
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");
+
+editor.setOptions({
+ //fontFamily: "JetBrains Mono",
+fontSize: "18px"
+});
 
 editor.session.on('change', function(delta) {
     var preview = document.getElementById('preview').contentWindow.document;

@@ -74,8 +74,10 @@ function validate_moodle_user_and_send_code(){
 
     } else {
 
-        user = stored_user
-        pass = stored_pass
+        if (user == "" && pass == ""){
+            user = stored_user;
+            pass = stored_pass;
+        }
 
         console.log("Autenticando...");
 
@@ -92,7 +94,7 @@ function validate_moodle_user_and_send_code(){
                 //console.log(xhr.responseText);
 
                 if (JSON.parse(xhr.responseText).hasOwnProperty('error')){
-                    alert('Credenciais inv·lidas');
+                    alert('Credenciais inv√°lidas');
                     return;
                 }
 
@@ -115,6 +117,7 @@ function validate_moodle_user_and_send_code(){
                     localStorage.setItem('moodle_pass', pass);
                     localStorage.setItem('moodle_data', xhr2.responseText);
                     document.getElementById('moodle_form').style.visibility = 'hidden';
+                    document.getElementById('moodle_form').style.width = 0;
                     
                     var user_code = editor.getValue();
                     var url3 = "http://localhost/php_api/teufuturo/SendCode"
