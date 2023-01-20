@@ -8,10 +8,7 @@
 </head>
 <body>
 <div style="width: 100%; overflow: hidden;">
-    <div id="editor" style="float: left;">function foo(items) {
-        var x = "All this is syntax highlighted";
-        return x;
-    }</div>
+    <div id="editor" style="float: left;"></div>
     <div style="margin-left: 630px; width: 0; visibility: hidden" class="editor__footer--right" id="editor_preview">
         <iframe id='preview' style="background: white;"></iframe>  
     </div>
@@ -22,7 +19,7 @@
             <input type="text" id="moodle_user" placeholder="Usuário Moodle"/>
             <input type="password" id="moodle_pass" placeholder="Senha Moodle"/>
         </form>
-        <button id="send_button" class="editor__btn editor__run" onclick="send_code()">Enviar</button>
+        <button id="send_button" class="editor__btn editor__run" onclick="send_code()">Rodar</button>
         <button style="visibility: hidden" id="run_button" class="editor__btn editor__run">Rodar</button>
         <button style="visibility: hidden" id="salvar" onclick='save()'>Salvar</button>
         <button style="visibility: hidden" id="reset_button" class="editor__btn editor__reset">Resetar</button>
