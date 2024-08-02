@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Recomendação de Seguros</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        .customer {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .customer i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        .profile {
+            margin-left: 34px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .recommendation {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .recommendation-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .recommendation i {
+            font-size: 24px;
+            margin-right: 5px;
+        }
+        .rank {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .explanation {
+            font-size: 0.9em;
+            color: #555;
+            max-width: 50%;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #333;
+        }
+        .probability {
+            font-weight: bold;
+            color: #333;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Recomendação de Seguros</h1>
+
+        <h2>Clientes</h2>
+        <div id="customers"></div>
+
+        <h2>Recomendações</h2>
+        <div id="recommendations"></div>
+    </div>
+
+    <script>
+        // Exemplo de produtos (seguros)
+        const products = [
+            { id: 1, name: 'Seguro de Vida', category: 'Seguros', icon: 'fa-heart', popularity: 5 },
+            { id: 2, name: 'Seguro de Carro', category: 'Seguros', icon: 'fa-car', popularity: 4 },
+            { id: 3, name: 'Seguro Residencial', category: 'Seguros', icon: 'fa-home', popularity: 3 },
+            { id: 4, name: 'Seguro Saúde', category: 'Seguros', icon: 'fa-heartbeat', popularity: 6 },
+            { id: 5, name: 'Seguro Viagem', category: 'Seguros', icon: 'fa-plane', popularity: 2 },
+            { id: 6, name: 'Seguro de Acidentes Pessoais', category: 'Seguros', icon: 'fa-user-shield', popularity: 1 }
+        ];
+
+        // Exemplo de clientes e histórico de compras
+        const customers = [
+            { id: 1, name: 'Maria', age: 30, gender: 'female', profile: 'Profissional de TI', purchases: [1, 2], icon: 'fa-user-circle' },
+            { id: 2, name: 'João', age: 45, gender: 'male', profile: 'Empresário', purchases: [3, 4], icon: 'fa-user-circle' },
+            { id: 3, name: 'Ana', age: 25, gender: 'female', profile: 'Estudante', purchases: [5], icon: 'fa-user-circle' },
+            { id: 4, name: 'Pedro', age: 35, gender: 'male', profile: 'Engenheiro', purchases: [1], icon: 'fa-user-circle' },
+            { id: 5, name: 'Lucas', age: 50, gender: 'male', profile: 'Médico', purchases: [2, 4], icon: 'fa-user-circle' },
+            { id: 6, name: 'Fernanda', age: 40, gender: 'female', profile: 'Advogada', purchases: [3], icon: 'fa-user-circle' },
+            { id: 7, name: 'Carlos', age: 28, gender: 'male', profile: 'Analista Financeiro', purchases: [1, 5], icon: 'fa-user-circle' }
+        ];
+
+        // Função para gerar recomendações com base no histórico de compras
+        function generateRecommendations(customer, products) {
+            const recommendations = products.filter(product =>
+                !customer.purchases.includes(product.id)
+            ).sort((a, b) => b.popularity - a.popularity); // Ordena por popularidade
+
+            // Distribui porcentagens de chance
+            const totalPopularity = recommendations.reduce((sum, product) => sum + product.popularity, 0);
+            recommendations.forEach(product => {
+                product.probability = Math.round((product.popularity / totalPopularity) * 100);
+            });
+
+            // Ajusta a soma das porcentagens para fechar em 100%
+            const totalProbability = recommendations.reduce((sum, product) => sum + product.probability, 0);
+            const difference = 100 - totalProbability;
+            if (difference !== 0 && recommendations.length > 0) {
+                recommendations[0].probability += difference;
+            }
+
+            return recommendations;
+        }
+
+        // Função para exibir clientes
+        function displayCustomers(customers) {
+            const customerDiv = document.getElementById('customers');
+            customers.forEach(customer => {
+                const customerElement = document.createElement('div');
+                customerElement.className = 'customer';
+                customerElement.innerHTML = `<i class="fas ${customer.icon}"></i><strong>${customer.name}</strong>`;
+                customerElement.addEventListener('click', () => showRecommendations(customer));
+                customerElement.addEventListener('click', () => toggleProfile(customerElement, customer));
+                customerDiv.appendChild(customerElement);
+            });
+        }
+
+        // Função para exibir perfil do cliente
+        function toggleProfile(element, customer) {
+            const profile = element.querySelector('.profile');
+            if (profile) {
+                profile.remove();
+            } else {
+                const profileDiv = document.createElement('div');
+                profileDiv.className = 'profile';
+                profileDiv.innerHTML = `<strong>Perfil:</strong> Idade: ${customer.age} | Gênero: ${customer.gender === 'male' ? 'Masculino' : 'Feminino'} | Perfil: ${customer.profile}`;
+                element.appendChild(profileDiv);
+            }
+        }
+
+        // Função para exibir recomendações
+        function showRecommendations(customer) {
+            const recommendations = generateRecommendations(customer, products);
+            const recommendationDiv = document.getElementById('recommendations');
+            recommendationDiv.innerHTML = ''; // Limpa as recomendações anteriores
+            const recommendationElement = document.createElement('div');
+            recommendationElement.className = 'recommendation';
+            recommendationElement.innerHTML = `<strong>Recomendações para ${customer.name}:</strong><br>`;
+            recommendations.forEach((product, index) => {
+                const explanation = generateExplanation(customer, product);
+                recommendationElement.innerHTML += `
+                    <div class="recommendation-item">
+                        <div>
+                            <span class="rank">${index + 1}.</span><i class="fas ${product.icon}"></i>${product.name} (${product.category})<span class="probability"> - ${product.probability}%</span>
+                        </div>
+                        <div class="explanation">${explanation}</div>
+                    </div>
+                `;
+            });
+            recommendationElement.innerHTML += `<p>Estas recomendações são baseadas em produtos que ${customer.name} ainda não comprou.</p>`;
+            recommendationDiv.appendChild(recommendationElement);
+        }
+
+        // Função para gerar explicação da recomendação
+        function generateExplanation(customer, product) {
+            let explanation = '';
+
+            // Recomendação colaborativa
+            explanation += '<span class="highlight">Baseado</span> em <span class="highlight">compras</span> <span class="highlight">similares</span> de <span class="highlight">outros clientes</span>. ';
+
+            // Recomendação demográfica
+            if (product.category === 'Seguros' && product.name.includes('Vida') && customer.age < 40) {
+                explanation += '<span class="highlight">Pessoas jovens</span> como você <span class="highlight">costumam adquirir</span> este seguro.';
+            } else if (product.category === 'Seguros' && product.name.includes('Saúde') && customer.age > 40) {
+                explanation += 'Clientes na sua <span class="highlight">faixa etária</span> geralmente <span class="highlight">preferem</span> ter um seguro saúde.';
+            } else if (product.category === 'Seguros' && product.name.includes('Carro') && customer.gender === 'male') {
+                explanation += '<span class="highlight">Homens</span> frequentemente <span class="highlight">optam</span> por este seguro.';
+            } else if (product.category === 'Seguros' && product.name.includes('Residencial') && customer.purchases.includes(1)) {
+                explanation += 'Clientes que possuem <span class="highlight">Seguro de Vida</span> frequentemente também <span class="highlight">adquirem</span> Seguro Residencial.';
+            } else {
+                explanation += 'Este produto é <span class="highlight">popular</span> entre nossos clientes.';
+            }
+
+            return explanation;
+        }
+
+        // Exibir clientes ao carregar a página
+        displayCustomers(customers);
+    </script>
+</body>
+</html>

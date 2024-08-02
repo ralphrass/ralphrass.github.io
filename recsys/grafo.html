@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafo de Relacionamento Cliente-Produto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.22.0/cytoscape.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        #cy {
+            width: 100%;
+            height: 800px; /* Aumentado para melhor visualização */
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grafo de Relacionamento Cliente-Produto</h1>
+        <div id="cy"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.22.0/cytoscape.min.js"></script>
+    <script>
+        // Dados dos produtos
+        const products = [
+            { id: 1, name: 'Seguro de Vida' },
+            { id: 2, name: 'Seguro de Carro' },
+            { id: 3, name: 'Seguro Residencial' },
+            { id: 4, name: 'Seguro Saúde' },
+            { id: 5, name: 'Seguro Viagem' },
+            { id: 6, name: 'Seguro de Acidentes Pessoais' }
+        ];
+
+        // Dados dos clientes
+        const customers = [
+            { id: 1, name: 'Maria', purchases: [1, 2] },
+            { id: 2, name: 'João', purchases: [3, 4] },
+            { id: 3, name: 'Ana', purchases: [5] },
+            { id: 4, name: 'Pedro', purchases: [1] },
+            { id: 5, name: 'Lucas', purchases: [2, 4] },
+            { id: 6, name: 'Fernanda', purchases: [3] },
+            { id: 7, name: 'Carlos', purchases: [1, 5] }
+        ];
+
+        // Cria a lista de nós e arestas
+        const nodes = [];
+        const edges = [];
+
+        // Adiciona nós para produtos e clientes
+        products.forEach(product => {
+            nodes.push({ data: { id: `product-${product.id}`, label: product.name, type: 'product' } });
+        });
+        customers.forEach(customer => {
+            nodes.push({ data: { id: `customer-${customer.id}`, label: customer.name, type: 'customer' } });
+            customer.purchases.forEach(productId => {
+                edges.push({ data: { source: `customer-${customer.id}`, target: `product-${productId}` } });
+            });
+        });
+
+        // Inicializa o Cytoscape
+        const cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: {
+                nodes: nodes,
+                edges: edges
+            },
+            layout: {
+                name: 'cose',
+                animate: true,
+                padding: 10
+            },
+            style: [
+                {
+                    selector: 'node[type="customer"]',
+                    style: {
+                        'background-color': '#f39c12',
+                        'label': 'data(label)',
+                        'color': '#fff',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'width': '80px', /* Aumentado para melhor leitura */
+                        'height': '80px', /* Aumentado para melhor leitura */
+                        'font-size': '16px' /* Aumentado para melhor leitura */
+                    }
+                },
+                {
+                    selector: 'node[type="product"]',
+                    style: {
+                        'background-color': '#fff',
+                        'label': 'data(label)',
+                        'color': '#000', /* Cor do texto alterada para preto */
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'width': '80px', /* Aumentado para melhor leitura */
+                        'height': '80px', /* Aumentado para melhor leitura */
+                        'font-size': '16px' /* Aumentado para melhor leitura */
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'curve-style': 'bezier',
+                        'target-arrow-shape': 'triangle',
+                        'line-color': '#ccc',
+                        'target-arrow-color': '#ccc'
+                    }
+                }
+            ]
+        });
+    </script>
+</body>
+</html>

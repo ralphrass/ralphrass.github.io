@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árvore de Decisão Cliente-Produto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #chart {
+            width: 100%;
+            height: 90vh;
+            margin: auto;
+            overflow: auto;
+        }
+        #info {
+            width: 30%;
+            float: right;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #info h3 {
+            margin-top: 0;
+        }
+        svg {
+            font: 12px sans-serif;
+        }
+        .node circle {
+            stroke: #000;
+            stroke-width: 2px;
+            fill: #f39c12;
+        }
+        .node text {
+            font-size: 14px;
+            pointer-events: none;
+        }
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart"></div>
+    <div id="info">
+        <h3>Detalhes</h3>
+        <div id="info-content">
+            <p>Selecione um cliente ou produto para ver os detalhes.</p>
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        // Dados para a árvore de decisão
+        const data = {
+            name: "Clientes",
+            children: [
+                {
+                    name: "Idade: 20-30",
+                    children: [
+                        {
+                            name: "Profissão: Saúde",
+                            children: [
+                                {
+                                    name: "Renda: Baixa",
+                                    children: [
+                                        { name: "Seguro Saúde", details: "Cobertura para despesas médicas e hospitalares." }
+                                    ]
+                                },
+                                {
+                                    name: "Renda: Média",
+                                    children: [
+                                        { name: "Seguro de Vida", details: "Cobertura completa para acidentes e doenças." }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Profissão: Tecnologia",
+                            children: [
+                                {
+                                    name: "Renda: Alta",
+                                    children: [
+                                        { name: "Seguro de Carro", details: "Protege contra danos e roubos de veículos." }
+                                    ]
+                                },
+                                {
+                                    name: "Renda: Média",
+                                    children: [
+                                        { name: "Seguro Viagem", details: "Protege contra imprevistos durante viagens." }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Idade: 31-40",
+                    children: [
+                        {
+                            name: "Profissão: Empresário",
+                            children: [
+                                {
+                                    name: "Renda: Alta",
+                                    children: [
+                                        { name: "Seguro Residencial", details: "Cobre danos e roubo em residências." }
+                                    ]
+                                },
+                                {
+                                    name: "Renda: Média",
+                                    children: [
+                                        { name: "Seguro de Acidentes Pessoais", details: "Cobertura para acidentes pessoais." }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Profissão: Educador",
+                            children: [
+                                {
+                                    name: "Renda: Média",
+                                    children: [
+                                        { name: "Seguro de Vida", details: "Cobertura completa para acidentes e doenças." }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Configurações do gráfico
+        const margin = { top: 20, right: 120, bottom: 20, left: 120 };
+        const width = document.getElementById('chart').offsetWidth - margin.left - margin.right;
+        const height = document.getElementById('chart').offsetHeight - margin.top - margin.bottom;
+
+        const svg = d3.select("#chart").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        const root = d3.hierarchy(data);
+        const treeLayout = d3.tree().size([width, height]);
+
+        treeLayout(root);
+
+        // Cria os links
+        svg.selectAll('line')
+            .data(root.links())
+            .enter().append('line')
+            .attr('class', 'link')
+            .attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+
+        // Cria os nós
+        const nodes = svg.selectAll('.node')
+            .data(root.descendants())
+            .enter().append('g')
+            .attr('class', 'node')
+            .attr('transform', d => `translate(${d.x},${d.y})`)
+            .on('click', function(event, d) {
+                updateInfoPanel(d.data);
+            });
+
+        nodes.append('circle')
+            .attr('r', 15);
+
+        nodes.append('text')
+            .attr('x', d => d.children ? -20 : 20)
+            .attr('dy', 5)
+            .style('text-anchor', d => d.children ? 'end' : 'start')
+            .text(d => d.data.name);
+
+        // Função para atualizar o painel de informações
+        function updateInfoPanel(data) {
+            const infoContent = document.getElementById('info-content');
+            if (data.details) {
+                infoContent.innerHTML = `
+                    <h3>Detalhes do Produto</h3>
+                    <p><strong>Nome:</strong> ${data.name}</p>
+                    <p><strong>Detalhes:</strong> ${data.details}</p>
+                `;
+            } else {
+                infoContent.innerHTML = `
+                    <h3>Atributos do Cliente</h3>
+                    <p><strong>Nome:</strong> ${data.name}</p>
+                `;
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafo de Relacionamento Cliente-Produto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.22.0/cytoscape.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+        }
+        #cy {
+            width: 70%;
+            height: 800px; /* Aumentado para melhor visualização */
+            border: 1px solid #ccc;
+        }
+        #info {
+            width: 25%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #info h3 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="cy"></div>
+        <div id="info">
+            <h3>Detalhes</h3>
+            <div id="info-content">
+                <p>Selecione um cliente ou produto para ver os detalhes.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.22.0/cytoscape.min.js"></script>
+    <script>
+        // Dados dos produtos
+        const products = [
+            { id: 1, name: 'Seguro de Vida', details: 'Cobertura completa para acidentes e doenças.', category: 'Seguros' },
+            { id: 2, name: 'Seguro de Carro', details: 'Protege contra danos e roubos de veículos.', category: 'Seguros' },
+            { id: 3, name: 'Seguro Residencial', details: 'Cobre danos e roubo em residências.', category: 'Seguros' },
+            { id: 4, name: 'Seguro Saúde', details: 'Cobertura para despesas médicas e hospitalares.', category: 'Seguros' },
+            { id: 5, name: 'Seguro Viagem', details: 'Protege contra imprevistos durante viagens.', category: 'Seguros' },
+            { id: 6, name: 'Seguro de Acidentes Pessoais', details: 'Cobertura para acidentes pessoais.', category: 'Seguros' }
+        ];
+
+        // Dados dos clientes
+        const customers = [
+            { id: 1, name: 'Maria', age: 30, gender: 'Feminino', profile: 'Profissional de saúde', purchases: [1, 2] },
+            { id: 2, name: 'João', age: 45, gender: 'Masculino', profile: 'Empresário', purchases: [3, 4] },
+            { id: 3, name: 'Ana', age: 28, gender: 'Feminino', profile: 'Professora', purchases: [5] },
+            { id: 4, name: 'Pedro', age: 35, gender: 'Masculino', profile: 'Engenheiro', purchases: [1] },
+            { id: 5, name: 'Lucas', age: 40, gender: 'Masculino', profile: 'Analista de TI', purchases: [2, 4] },
+            { id: 6, name: 'Fernanda', age: 32, gender: 'Feminino', profile: 'Design de interiores', purchases: [3] },
+            { id: 7, name: 'Carlos', age: 50, gender: 'Masculino', profile: 'Advogado', purchases: [1, 5] }
+        ];
+
+        // Cria a lista de nós e arestas
+        const nodes = [];
+        const edges = [];
+
+        // Adiciona nós para produtos e clientes
+        products.forEach(product => {
+            nodes.push({ data: { id: `product-${product.id}`, label: product.name, type: 'product', details: product.details, category: product.category } });
+        });
+        customers.forEach(customer => {
+            nodes.push({ data: { id: `customer-${customer.id}`, label: customer.name, type: 'customer', age: customer.age, gender: customer.gender, profile: customer.profile } });
+            customer.purchases.forEach(productId => {
+                edges.push({ data: { source: `customer-${customer.id}`, target: `product-${productId}` } });
+            });
+        });
+
+        // Inicializa o Cytoscape
+        const cy = cytoscape({
+            container: document.getElementById('cy'),
+            elements: {
+                nodes: nodes,
+                edges: edges
+            },
+            layout: {
+                name: 'cose',
+                animate: true,
+                padding: 10
+            },
+            style: [
+                {
+                    selector: 'node[type="customer"]',
+                    style: {
+                        'background-color': '#f39c12',
+                        'label': 'data(label)',
+                        'color': '#fff',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'width': '80px', /* Aumentado para melhor leitura */
+                        'height': '80px', /* Aumentado para melhor leitura */
+                        'font-size': '16px' /* Aumentado para melhor leitura */
+                    }
+                },
+                {
+                    selector: 'node[type="product"]',
+                    style: {
+                        'background-color': '#fff',
+                        'label': 'data(label)',
+                        'color': '#000', /* Cor do texto alterada para preto */
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'width': '80px', /* Aumentado para melhor leitura */
+                        'height': '80px', /* Aumentado para melhor leitura */
+                        'font-size': '16px' /* Aumentado para melhor leitura */
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'curve-style': 'bezier',
+                        'target-arrow-shape': 'triangle',
+                        'line-color': '#ccc',
+                        'target-arrow-color': '#ccc'
+                    }
+                }
+            ]
+        });
+
+        // Função para atualizar o painel de informações
+        function updateInfoPanel(node) {
+            const infoContent = document.getElementById('info-content');
+            if (node.data('type') === 'customer') {
+                infoContent.innerHTML = `
+                    <h3>Perfil do Cliente</h3>
+                    <p><strong>Nome:</strong> ${node.data('label')}</p>
+                    <p><strong>Idade:</strong> ${node.data('age')}</p>
+                    <p><strong>Gênero:</strong> ${node.data('gender')}</p>
+                    <p><strong>Perfil:</strong> ${node.data('profile')}</p>
+                `;
+            } else if (node.data('type') === 'product') {
+                infoContent.innerHTML = `
+                    <h3>Detalhes do Produto</h3>
+                    <p><strong>Nome:</strong> ${node.data('label')}</p>
+                    <p><strong>Categoria:</strong> ${node.data('category')}</p>
+                    <p><strong>Detalhes:</strong> ${node.data('details')}</p>
+                `;
+            }
+        }
+
+        // Adiciona o evento de clique para nós
+        cy.on('tap', 'node', function(event) {
+            const node = event.target;
+            updateInfoPanel(node);
+        });
+
+    </script>
+</body>
+</html>
