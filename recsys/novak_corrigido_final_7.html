@@ -1,0 +1,849 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novak - Sistema de Recomendação de Vendas</title>
+    <style>
+        header {
+            background: linear-gradient(15deg, #000000, #4d4d4d, #bfbfbf, #ffffff);
+            /* 135deg define a direção do degradê. 
+            Você pode ajustar conforme necessário, por exemplo, 90deg para horizontal ou 180deg para vertical. */
+            
+            margin: 0;
+            padding: 0;
+        }
+        .centered-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px; /* Ajuste a altura conforme necessário */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(to bottom, #000000, #333333);
+            padding: 10px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        header img {
+            width: 180px;
+            vertical-align: middle;
+            display: block;
+            margin: 0 auto;
+        }
+        .container {
+            margin-top: 120px;
+            width: 90%;
+            max-width: 1200px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-top: 120px;
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            flex: 1;
+            text-align: center;
+        }
+        .menu a:hover {
+            background-color: #004999;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dddddd;
+        }
+        th {
+            background-color: #0066cc;
+            color: white;
+            cursor: pointer;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e0e0e0;
+            cursor: pointer;
+        }
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .pagination a:hover {
+            background-color: #004999;
+        }
+        .icon {
+            margin-right: 8px;
+        }
+        .highlight {
+            color: #0066cc;
+            font-weight: bold;
+        }
+        #graficoPizza {
+    width: 200px;
+    height: 200px;
+}
+    </style>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+    <header>
+        <img src="novak_logo.png" alt="Novak Logo">
+    </header>
+    <div class="container">
+        <div class="menu">
+            <a href="#" onclick="loadContent('produtos')">Produtos</a>
+            <a href="#" onclick="loadContent('clientes')">Clientes</a>
+            <a href="#" onclick="loadContent('analise')">Análise</a>
+        </div>
+        <div id="content"></div>
+    </div>
+    <script>
+        function formatCurrency(value) {
+            return 'R$ ' + parseFloat(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+        }
+
+        const produtos = [{"product_id":1,"product_name":"Seguro de Autom\u00f3vel","category":"Empresarial","price":2257,"popularity":33},{"product_id":2,"product_name":"Seguro Sa\u00fade","category":"Empresarial","price":4952,"popularity":33},{"product_id":3,"product_name":"Seguro Residencial","category":"Empresarial","price":2570,"popularity":61},{"product_id":4,"product_name":"Seguro de Vida","category":"Sa\u00fade","price":3349,"popularity":51},{"product_id":5,"product_name":"Seguro Vida","category":"Residencial","price":3751,"popularity":43},{"product_id":6,"product_name":"Seguro Empresarial","category":"Vida","price":4230,"popularity":12},{"product_id":7,"product_name":"Seguro Vida","category":"Sa\u00fade","price":2989,"popularity":67},{"product_id":8,"product_name":"Seguro Empresarial","category":"Empresarial","price":2131,"popularity":65},{"product_id":9,"product_name":"Seguro Autom\u00f3vel","category":"Autom\u00f3vel","price":3316,"popularity":33},{"product_id":10,"product_name":"Seguro Residencial","category":"Empresarial","price":1515,"popularity":40},{"product_id":11,"product_name":"Seguro Empresarial","category":"Residencial","price":1848,"popularity":74},{"product_id":12,"product_name":"Seguro Autom\u00f3vel","category":"Empresarial","price":3587,"popularity":43},{"product_id":13,"product_name":"Seguro Vida","category":"Autom\u00f3vel","price":3339,"popularity":44},{"product_id":14,"product_name":"Seguro Vida","category":"Residencial","price":835,"popularity":29},{"product_id":15,"product_name":"Seguro Autom\u00f3vel","category":"Empresarial","price":1395,"popularity":13},{"product_id":16,"product_name":"Seguro Vida","category":"Residencial","price":4046,"popularity":12},{"product_id":17,"product_name":"Seguro Autom\u00f3vel","category":"Vida","price":1351,"popularity":95},{"product_id":18,"product_name":"Seguro Empresarial","category":"Vida","price":2187,"popularity":46},{"product_id":19,"product_name":"Seguro Empresarial","category":"Empresarial","price":2431,"popularity":2},{"product_id":20,"product_name":"Seguro Autom\u00f3vel","category":"Residencial","price":4246,"popularity":35}];
+
+        const usuarios = [
+            {"user_id": 1, "age": 56, "location": "Canoas", "num_policies": 3, "location_encoded": 0, "name": "Gabriel Oliveira", "estado_civil": "Divorciado", "telefone": "(51) 94351-4030", "profissao": "Arquiteto", "vendedor": "Paula Mendes"},
+            {"user_id": 2, "age": 69, "location": "Gravataí", "num_policies": 1, "location_encoded": 0, "name": "Maria Souza", "estado_civil": "Solteiro", "telefone": "(51) 92376-4130", "profissao": "Professor", "vendedor": "Ricardo Santos"},
+            {"user_id": 3, "age": 46, "location": "Novo Hamburgo", "num_policies": 1, "location_encoded": 0, "name": "João Santos", "estado_civil": "Divorciado", "telefone": "(51) 91831-7553", "profissao": "Arquiteto", "vendedor": "Ana Pereira"},
+            {"user_id": 4, "age": 32, "location": "Novo Hamburgo", "num_policies": 2, "location_encoded": 2, "name": "Ana Maria", "estado_civil": "Viúvo", "telefone": "(51) 99993-2909", "profissao": "Consultor", "vendedor": "Beatriz Ribeiro"},
+            {"user_id": 5, "age": 60, "location": "Porto Alegre", "num_policies": 4, "location_encoded": 0, "name": "Lucas Pereira", "estado_civil": "Viúvo", "telefone": "(51) 96340-2481", "profissao": "Dentista", "vendedor": "Ricardo Santos"},
+            {"user_id": 6, "age": 25, "location": "Caxias do Sul", "num_policies": 2, "location_encoded": 0, "name": "Beatriz Costa", "estado_civil": "Viúvo", "telefone": "(51) 97101-7658", "profissao": "Consultor", "vendedor": "Ricardo Santos"},
+            {"user_id": 7, "age": 38, "location": "Gravataí", "num_policies": 2, "location_encoded": 2, "name": "Pedro Almeida", "estado_civil": "Viúvo", "telefone": "(51) 99092-1379", "profissao": "Consultor", "vendedor": "Paula Mendes"},
+            {"user_id": 8, "age": 56, "location": "Caxias do Sul", "num_policies": 2, "location_encoded": 2, "name": "Juliana Lima", "estado_civil": "Solteiro", "telefone": "(51) 94527-3115", "profissao": "Médico", "vendedor": "Sofia Costa"},
+            {"user_id": 9, "age": 36, "location": "Santa Maria", "num_policies": 2, "location_encoded": 2, "name": "Felipe Nascimento", "estado_civil": "Divorciado", "telefone": "(51) 91814-1007", "profissao": "Empresário", "vendedor": "Carlos Souza"},
+            {"user_id": 10, "age": 40, "location": "Caxias do Sul", "num_policies": 3, "location_encoded": 0, "name": "Renata Carvalho", "estado_civil": "Viúvo", "telefone": "(51) 95798-4544", "profissao": "Médico", "vendedor": "Carlos Souza"},
+            {"user_id": 11, "age": 49, "location": "São Leopoldo", "num_policies": 1, "location_encoded": 0, "name": "André Martins", "estado_civil": "Viúvo", "telefone": "(51) 99055-6836", "profissao": "Desenvolvedor", "vendedor": "Carlos Souza"},
+            {"user_id": 12, "age": 32, "location": "Pelotas", "num_policies": 2, "location_encoded": 1, "name": "Fernanda Araújo", "estado_civil": "Viúvo", "telefone": "(51) 96480-6157", "profissao": "Desenvolvedor", "vendedor": "Fernando Lima"},
+            {"user_id": 13, "age": 61, "location": "Santa Maria", "num_policies": 4, "location_encoded": 1, "name": "Rodrigo Silva", "estado_civil": "Viúvo", "telefone": "(51) 97101-7658", "profissao": "Advogado", "vendedor": "Carlos Souza"},
+            {"user_id": 14, "age": 46, "location": "São Leopoldo", "num_policies": 3, "location_encoded": 2, "name": "Camila Ferreira", "estado_civil": "Solteiro", "telefone": "(51) 91795-4467", "profissao": "Consultor", "vendedor": "Mariana Oliveira"},
+            {"user_id": 15, "age": 28, "location": "Porto Alegre", "num_policies": 1, "location_encoded": 0, "name": "Thiago Rocha", "estado_civil": "Solteiro", "telefone": "(51) 99055-6836", "profissao": "Advogado", "vendedor": "Carlos Souza"},
+            {"user_id": 16, "age": 64, "location": "Novo Hamburgo", "num_policies": 2, "location_encoded": 2, "name": "Mariana Teixeira", "estado_civil": "Casado", "telefone": "(51) 99055-6836", "profissao": "Arquiteto", "vendedor": "Carlos Souza"},
+            {"user_id": 17, "age": 44, "location": "Pelotas", "num_policies": 1, "location_encoded": 2, "name": "Rafael Barbosa", "estado_civil": "Casado", "telefone": "(51) 99055-6836", "profissao": "Consultor", "vendedor": "José Silva"},
+            {"user_id": 18, "age": 60, "location": "Canoas", "num_policies": 3, "location_encoded": 1, "name": "Laura Fernandes", "estado_civil": "Viúvo", "telefone": "(51) 96480-6157", "profissao": "Consultor", "vendedor": "Ricardo Santos"},
+            {"user_id": 19, "age": 42, "location": "Pelotas", "num_policies": 2, "location_encoded": 0, "name": "Bruno Gonçalves", "estado_civil": "Solteiro", "telefone": "(51) 94527-3115", "profissao": "Professor", "vendedor": "Carlos Souza"},
+            {"user_id": 20, "age": 65, "location": "Pelotas", "num_policies": 2, "location_encoded": 1, "name": "Patrícia Castro", "estado_civil": "Solteiro", "telefone": "(51) 97387-9815", "profissao": "Médico", "vendedor": "Paula Mendes"},
+            {"user_id": 21, "age": 57, "location": "Santa Maria", "num_policies": 1, "location_encoded": 1, "name": "Carlos Moreira", "estado_civil": "Casado", "telefone": "(51) 96480-6157", "profissao": "Professor", "vendedor": "Ana Pereira"},
+            {"user_id": 22, "age": 23, "location": "São Leopoldo", "num_policies": 3, "location_encoded": 2, "name": "Sara Pinto", "estado_civil": "Casado", "telefone": "(51) 97387-9815", "profissao": "Consultor", "vendedor": "Carlos Souza"},
+            {"user_id": 23, "age": 60, "location": "Pelotas", "num_policies": 4, "location_encoded": 1, "name": "Marcelo Ribeiro", "estado_civil": "Casado", "telefone": "(51) 96480-6157", "profissao": "Dentista", "vendedor": "Sofia Costa"},
+            {"user_id": 25, "age": 58, "location": "Caxias do Sul", "num_policies": 2, "location_encoded": 0, "name": "Cliente 25", "estado_civil": "Viúvo", "telefone": "(51) 95071-7124", "profissao": "Engenheiro", "vendedor": "Paula Mendes"},
+            {"user_id": 26, "age": 40, "location": "Porto Alegre", "num_policies": 2, "location_encoded": 2, "name": "Cliente 26", "estado_civil": "Divorciado", "telefone": "(51) 99696-3355", "profissao": "Arquiteto", "vendedor": "Mariana Oliveira"},
+            {"user_id": 27, "age": 36, "location": "Viamão", "num_policies": 3, "location_encoded": 2, "name": "Cliente 27", "estado_civil": "Casado", "telefone": "(51) 92780-3318", "profissao": "Empresário", "vendedor": "Ana Pereira"},
+            {"user_id": 28, "age": 61, "location": "Rio Grande", "num_policies": 4, "location_encoded": 2, "name": "Cliente 28", "estado_civil": "Solteiro", "telefone": "(51) 96313-1458", "profissao": "Desenvolvedor", "vendedor": "Carlos Souza"},
+            {"user_id": 29, "age": 48, "location": "Rio Grande", "num_policies": 4, "location_encoded": 2, "name": "Cliente 29", "estado_civil": "Casado", "telefone": "(51) 92367-6608", "profissao": "Médico", "vendedor": "Fernando Lima"},
+            {"user_id": 30, "age": 68, "location": "Gravataí", "num_policies": 3, "location_encoded": 0, "name": "Cliente 30", "estado_civil": "Divorciado", "telefone": "(51) 97309-6030", "profissao": "Consultor", "vendedor": "Paula Mendes"},
+            {"user_id": 31, "age": 50, "location": "Santa Maria", "num_policies": 2, "location_encoded": 1, "name": "Cliente 31", "estado_civil": "Divorciado", "telefone": "(51) 98803-4455", "profissao": "Professor", "vendedor": "Carlos Souza"},
+            {"user_id": 32, "age": 18, "location": "Novo Hamburgo", "num_policies": 2, "location_encoded": 0, "name": "Cliente 32", "estado_civil": "Casado", "telefone": "(51) 95353-9847", "profissao": "Analista", "vendedor": "Fernando Lima"},
+            {"user_id": 33, "age": 30, "location": "Gravataí", "num_policies": 4, "location_encoded": 1, "name": "Cliente 33", "estado_civil": "Viúvo", "telefone": "(51) 97395-9856", "profissao": "Desenvolvedor", "vendedor": "Sofia Costa"},
+            {"user_id": 34, "age": 63, "location": "Viamão", "num_policies": 4, "location_encoded": 1, "name": "Cliente 34", "estado_civil": "Viúvo", "telefone": "(51) 92213-1085", "profissao": "Dentista", "vendedor": "Ana Pereira"},
+            {"user_id": 35, "age": 53, "location": "Canoas", "num_policies": 1, "location_encoded": 0, "name": "Cliente 35", "estado_civil": "Casado", "telefone": "(51) 94412-1496", "profissao": "Consultor", "vendedor": "Ricardo Santos"},
+            {"user_id": 36, "age": 38, "location": "Novo Hamburgo", "num_policies": 2, "location_encoded": 1, "name": "Cliente 36", "estado_civil": "Casado", "telefone": "(51) 92336-1444", "profissao": "Advogado", "vendedor": "Carlos Souza"},
+            {"user_id": 37, "age": 45, "location": "Gravataí", "num_policies": 3, "location_encoded": 2, "name": "Cliente 37", "estado_civil": "Viúvo", "telefone": "(51) 92643-2039", "profissao": "Médico", "vendedor": "Fernando Lima"},
+            {"user_id": 38, "age": 60, "location": "Viamão", "num_policies": 4, "location_encoded": 0, "name": "Cliente 38", "estado_civil": "Divorciado", "telefone": "(51) 94314-7962", "profissao": "Professor", "vendedor": "Paula Mendes"},
+            {"user_id": 39, "age": 31, "location": "Gravataí", "num_policies": 2, "location_encoded": 1, "name": "Cliente 39", "estado_civil": "Viúvo", "telefone": "(51) 91823-6705", "profissao": "Engenheiro", "vendedor": "Sofia Costa"},
+            {"user_id": 40, "age": 29, "location": "Novo Hamburgo", "num_policies": 3, "location_encoded": 2, "name": "Cliente 40", "estado_civil": "Solteiro", "telefone": "(51) 94560-7359", "profissao": "Arquiteto", "vendedor": "Ana Pereira"},
+            {"user_id": 41, "age": 55, "location": "Caxias do Sul", "num_policies": 4, "location_encoded": 0, "name": "Cliente 41", "estado_civil": "Divorciado", "telefone": "(51) 91382-1985", "profissao": "Empresário", "vendedor": "Paula Mendes"},
+            {"user_id": 42, "age": 48, "location": "Pelotas", "num_policies": 1, "location_encoded": 0, "name": "Cliente 42", "estado_civil": "Solteiro", "telefone": "(51) 96352-3647", "profissao": "Engenheiro", "vendedor": "Ricardo Santos"},
+            {"user_id": 43, "age": 54, "location": "Porto Alegre", "num_policies": 3, "location_encoded": 2, "name": "Cliente 43", "estado_civil": "Divorciado", "telefone": "(51) 99223-7787", "profissao": "Desenvolvedor", "vendedor": "Sofia Costa"},
+            {"user_id": 44, "age": 65, "location": "Canoas", "num_policies": 4, "location_encoded": 1, "name": "Cliente 44", "estado_civil": "Casado", "telefone": "(51) 96929-8091", "profissao": "Desenvolvedor", "vendedor": "Paula Mendes"},
+            {"user_id": 45, "age": 49, "location": "Rio Grande", "num_policies": 2, "location_encoded": 0, "name": "Cliente 45", "estado_civil": "Viúvo", "telefone": "(51) 99605-6911", "profissao": "Analista", "vendedor": "João Almeida"},
+            {"user_id": 46, "age": 65, "location": "Santa Maria", "num_policies": 4, "location_encoded": 2, "name": "Cliente 46", "estado_civil": "Solteiro", "telefone": "(51) 93927-8600", "profissao": "Arquiteto", "vendedor": "Paula Mendes"},
+            {"user_id": 47, "age": 66, "location": "Viamão", "num_policies": 4, "location_encoded": 2, "name": "Cliente 47", "estado_civil": "Casado", "telefone": "(51) 93551-6644", "profissao": "Engenheiro", "vendedor": "José Silva"},    
+        ];
+
+
+        const produtosPossiveis = ["Seguro de Vida", "Seguro de Automóvel", "Seguro Residencial", "Seguro de Viagem", "Seguro Empresarial"];
+
+        // Adicionando produtos contratados de forma aleatória
+        usuarios.forEach(usuario => {
+            const numProdutos = Math.floor(Math.random() * 3) + 1; // De 1 a 3 produtos
+            usuario.produtos_contratados = [];
+            for (let i = 0; i < numProdutos; i++) {
+                const produto = produtosPossiveis[Math.floor(Math.random() * produtosPossiveis.length)];
+                usuario.produtos_contratados.push(produto);
+            }
+        });
+
+        
+        let graficoBarra;
+        let graficoPizza;
+
+        function gerarGraficos() {
+            const vendedor = document.getElementById("vendedorDropdown").value;
+            if (vendedor) {
+                // Destruir gráficos existentes, se houver
+                if (graficoBarra instanceof Chart) {
+                    graficoBarra.destroy();
+                }
+                if (graficoPizza instanceof Chart) {
+                    graficoPizza.destroy();
+                }
+
+                // Gráfico de Barras
+                // const clientes = ["Cliente A", "Cliente B", "Cliente C", "Cliente D", "Cliente E", "Cliente F", "Cliente G", "Cliente H", "Cliente I", "Cliente J"];
+                const clientes = ["João Silva", "Maria Oliveira", "Pedro Costa", "Ana Santos", "Lucas Pereira", "Beatriz Almeida", "Carlos Moreira", "Fernanda Souza", "Ricardo Lima", "Juliana Rocha"];
+
+                const valores = Array.from({length: 10}, () => Math.floor(Math.random() * 100)).sort((a, b) => b - a);
+
+                const ctxBarra = document.getElementById('graficoBarra').getContext('2d');
+                graficoBarra = new Chart(ctxBarra, {
+                    type: 'bar',
+                    data: {
+                        labels: clientes,
+                        datasets: [{
+                            label: 'Chance de Conversão (%)',
+                            data: valores,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Clientes potenciais top 10'
+                            }
+                        }
+                    }
+                });
+
+                // Gráfico de Pizza
+                const produtos = ["Seguro de Vida", "Seguro de Automóvel", "Seguro Residencial", "Seguro de Viagem", "Seguro Empresarial"];
+                const valoresProdutos = Array.from({length: 5}, () => Math.floor(Math.random() * 100));
+                const somaValores = valoresProdutos.reduce((a, b) => a + b, 0);
+                const porcentagens = valoresProdutos.map(v => (v / somaValores) * 100);
+
+                const ctxPizza = document.getElementById('graficoPizza').getContext('2d');
+                graficoPizza = new Chart(ctxPizza, {
+                    type: 'pie',
+                    data: {
+                        labels: produtos,
+                        datasets: [{
+                            data: porcentagens,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Produtos top 5'
+                            },
+                            datalabels: {
+                                formatter: (value, ctx) => {
+                                    return value.toFixed(2) + '%'; // Formatação dos valores exibidos
+                                },
+                                color: '#fff', // Cor do texto
+                                font: {
+                                    weight: 'bold',
+                                    size: 14 // Tamanho da fonte
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels] // Adicionando o plugin de Data Labels
+                });
+            }
+        }
+
+        function filtrarPorVendedor() {
+            // const filtroVendedor = document.getElementById("vendedorFilter").value;
+            // const tabela = document.getElementById("clientesTable");
+            // const linhas = tabela.getElementsByTagName("tr");
+
+            // for (let i = 1; i < linhas.length; i++) {
+            //     const celulaVendedor = linhas[i].getElementsByTagName("td")[6]; // Supondo que a coluna de vendedor seja a 7ª (índice 6)
+            //     if (celulaVendedor) {
+            //         const vendedor = celulaVendedor.textContent || celulaVendedor.innerText;
+            //         if (filtroVendedor === "" || vendedor === filtroVendedor) {
+            //             linhas[i].style.display = "";
+            //         } else {
+            //             linhas[i].style.display = "none";
+            //         }
+            //     }
+            // }
+            const filtroVendedor = document.getElementById("vendedorFilter").value;
+            const tabela = document.getElementById("clientesTable");
+            const linhas = tabela.getElementsByTagName("tr");
+
+            for (let i = 1; i < linhas.length; i++) { // Começa em 1 para ignorar o cabeçalho
+                const celulaVendedor = linhas[i].getElementsByTagName("td")[7]; // Índice 6 para a 7ª coluna
+                if (celulaVendedor) {
+                    const vendedor = celulaVendedor.textContent || celulaVendedor.innerText;
+                    if (filtroVendedor === "" || vendedor.trim() === filtroVendedor.trim()) {
+                        linhas[i].style.display = ""; // Mostra a linha
+                    } else {
+                        linhas[i].style.display = "none"; // Esconde a linha
+                    }
+                }
+            }
+        }
+
+
+        function loadContent(page) {
+            const content = document.getElementById('content');
+            if (page === 'produtos') {
+                content.innerHTML = `
+                    <h2>Lista de Produtos</h2>
+                    <table id="produtosTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('produtosTable', 0)">ID do Produto</th>
+                                <th onclick="sortTable('produtosTable', 1)">Nome do Produto</th>
+                                <th onclick="sortTable('produtosTable', 2)">Categoria</th>
+                                <th onclick="sortTable('produtosTable', 3)">Popularidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="produtosPagination"></div>
+                `;
+                loadProdutos();
+            } else if (page === 'clientes') {
+                content.innerHTML = `
+                    <h2>Lista de Clientes</h2>
+                    <input type="text" id="busca" placeholder="Buscar por CPF, CNPJ ou Nome" onkeyup="searchCliente()">
+                    <label for="vendedorFilter">Filtrar por Vendedor:</label>
+                    <select id="vendedorFilter" onchange="filtrarPorVendedor()">
+                        <option value="">Todos</option>
+                        <option value="Paula Mendes">Paula Mendes</option>
+                        <option value="Ricardo Santos">Ricardo Santos</option>
+                        <option value="Ana Pereira">Ana Pereira</option>
+                        <option value="Beatriz Ribeiro">Beatriz Ribeiro</option>
+                        <option value="Fernando Lima">Fernando Lima</option>
+                        <option value="Mariana Oliveira">Mariana Oliveira</option>
+                        <option value="José Silva">José Silva</option>
+                        <option value="Sofia Costa">Sofia Costa</option>
+                        <option value="Carlos Souza">Carlos Souza</option>
+                        <option value="Paula Mendes">Paula Mendes</option>
+                    </select>
+                    <table id="clientesTable">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('clientesTable', 0)">ID do Cliente</th>
+                                <th onclick="sortTable('clientesTable', 1)">Nome</th>
+                                <th onclick="sortTable('clientesTable', 2)">Idade</th>
+                                <th onclick="sortTable('clientesTable', 3)">Localização</th>
+                                <th onclick="sortTable('clientesTable', 5)">Estado Civil</th>
+                                <th onclick="sortTable('clientesTable', 6)">Profissão</th>
+                                <th onclick="sortTable('clientesTable', 7)">Telefone</th>
+                                <th onclick="sortTable('clientesTable', 8)">Vendedor</th>
+                                <th onclick="sortTable('clientesTable', 9)">Número de Apólices</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="clientesPagination"></div>
+                `;
+                loadClientes();
+            } else if (page == 'analise'){
+
+                content.innerHTML = `
+                <h2>Análise</h2>
+                <h1>Selecione um Vendedor</h1>
+                    <select id="vendedorDropdown" onchange="gerarGraficos()">
+                        <option value="">Selecione...</option>
+                        <option value="Paula Mendes">Paula Mendes</option>
+                        <option value="Ana Pereira">Ana Pereira</option>
+                        <option value="Carlos Souza">Carlos Souza</option>
+                        <option value="Fernando Lima">Fernando Lima</option>
+                        <option value="Mariana Oliveira">Mariana Oliveira</option>
+                        <option value="Ricardo Santos">Ricardo Santos</option>
+                        <option value="Sofia Costa">Sofia Costa</option>
+                        <option value="João Almeida">João Almeida</option>
+                        <option value="José Silva">José Silva</option>
+                        <option value="Beatriz Ribeiro">Beatriz Ribeiro</option>
+                    </select>
+
+                    <h2>Clientes potenciais top 10</h2>
+                    <canvas id="graficoBarra"></canvas>
+
+                    <h2>Produtos top 5</h2>
+                    <div style="width: 600px; height: 600px;" class="centered-container">
+                    <canvas id="graficoPizza"></canvas>
+                    </div>
+
+                    
+                `
+            }
+        }
+
+        function loadProdutos(page = 1) {
+            const itemsPerPage = 10;
+            const table = document.getElementById('produtosTable').getElementsByTagName('tbody')[0];
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
+            table.innerHTML = '';
+            produtos.slice(startIndex, endIndex).forEach(produto => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${produto.product_id}</td>
+                    <td><a href="#" onclick="loadDetalhesProduto(${produto.product_id})">${produto.product_name}</a></td>
+                    <td>${produto.category}</td>
+                    <td class="highlight">${produto.popularity} <span class="icon">★</span></td>
+                `;
+                table.appendChild(tr);
+            });
+
+            // Paginação
+            const pagination = document.getElementById('produtosPagination');
+            const totalPages = Math.ceil(produtos.length / itemsPerPage);
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const a = document.createElement('a');
+                a.href = "#";
+                a.textContent = i;
+                a.onclick = () => loadProdutos(i);
+                pagination.appendChild(a);
+            }
+        }
+
+        function loadClientes(page = 1) {
+            const itemsPerPage = 10;
+            const table = document.getElementById('clientesTable').getElementsByTagName('tbody')[0];
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
+            table.innerHTML = '';
+            usuarios.slice(startIndex, endIndex).forEach(usuario => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${usuario.user_id}</td>
+                    <td><a href="#" onclick="loadDetalhesCliente(${usuario.user_id})">${usuario.name}</a></td>
+                    <td>${usuario.age}</td>
+                    <td>${usuario.location}</td>
+                    <td>${usuario.estado_civil}</td>
+                    <td>${usuario.profissao}</td>
+                    <td>${usuario.telefone}</td>
+                    <td>${usuario.vendedor}</td>
+                    <td>${usuario.num_policies}</td>
+                `;
+                table.appendChild(tr);
+            });
+
+            // Paginação
+            const pagination = document.getElementById('clientesPagination');
+            const totalPages = Math.ceil(usuarios.length / itemsPerPage);
+            pagination.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const a = document.createElement('a');
+                a.href = "#";
+                a.textContent = i;
+                a.onclick = () => loadClientes(i);
+                pagination.appendChild(a);
+            }
+        }
+
+        function sortTable(tableId, n) {
+            const table = document.getElementById(tableId).getElementsByTagName('tbody')[0];
+            const rows = Array.from(table.getElementsByTagName('tr'));
+            let sorted = false;
+            let direction = 'asc';
+
+            while (!sorted) {
+                sorted = true;
+                for (let i = 0; i < rows.length - 1; i++) {
+                    let shouldSwitch = false;
+                    const x = rows[i].getElementsByTagName('td')[n];
+                    const y = rows[i + 1].getElementsByTagName('td')[n];
+
+                    if (direction === 'asc' && x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    } else if (direction === 'desc' && x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+
+                if (shouldSwitch) {
+                    table.insertBefore(rows[i + 1], rows[i]);
+                    sorted = false;
+                }
+            }
+
+            direction = direction === 'asc' ? 'desc' : 'asc';
+        }
+
+        function searchCliente() {
+            const input = document.getElementById('busca').value.toLowerCase();
+            const table = document.getElementById('clientesTable').getElementsByTagName('tbody')[0];
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cols = rows[i].getElementsByTagName('td');
+                let match = false;
+
+                for (let j = 0; j < cols.length; j++) {
+                    if (cols[j].textContent.toLowerCase().includes(input)) {
+                        match = true;
+                        break;
+                    }
+                }
+
+                rows[i].style.display = match ? '' : 'none';
+            }
+        }
+
+        function loadDetalhesProduto(produtoId) {
+            const produto = produtos.find(p => p.product_id === produtoId);
+            const content = document.getElementById('content');
+
+            content.innerHTML = `
+                <h2>Detalhes do Produto: ${produto.product_name}</h2>
+
+                <h3>Perfil Médio dos Clientes</h3>
+                <p><strong>Faixa Etária:</strong> 35 - 45 anos</p>
+                <p><strong>Profissões Comuns:</strong> Engenheiro, Médico, Advogado, Professor, Consultor</p>
+                <p><strong>Estados Civis Comuns:</strong> Casado, Solteiro, Divorciado</p>
+                <p><strong>Média de Apólices Adquiridas:</strong> 2.5</p>
+
+                <h3>Clientes que adquiriram o produto</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Data de Aquisição</th>
+                            <th>Tempo de Posse</th>
+                            <th>Valor Pago</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientesProdutoTable">
+                    </tbody>
+                </table>
+                <h3>Clientes Potenciais</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Percentual de Chance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientesPotenciaisTable">
+                    </tbody>
+                </table>
+                <a href="#" onclick="loadContent('produtos')" class="link">Voltar</a>
+            `;
+
+            loadClientesProduto(produtoId);
+            loadClientesPotenciais(produtoId);
+        }
+
+        function loadClientesProduto(produtoId) {
+            // Exemplo de dados fictícios
+            const clientesProduto = [
+                {"cliente": "Ana Silva", "data_aquisicao": "2022-01-15", "tempo_posse": "2 anos", "valor_pago": "R$ 2.500"},
+                {"cliente": "Bruno Costa", "data_aquisicao": "2021-05-23", "tempo_posse": "3 anos", "valor_pago": "R$ 3.200"}
+            ];
+
+            const table = document.getElementById('clientesProdutoTable');
+            clientesProduto.forEach(cliente => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${cliente.cliente}</td>
+                    <td>${cliente.data_aquisicao}</td>
+                    <td>${cliente.tempo_posse}</td>
+                    <td>${cliente.valor_pago}</td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function loadClientesPotenciais(produtoId) {
+            // Exemplo de dados fictícios
+            const clientesPotenciais = [
+                {"cliente": "Carlos Souza", "percentual_chance": "80%"},
+                {"cliente": "Fernanda Rocha", "percentual_chance": "75%"}
+            ];
+
+            const table = document.getElementById('clientesPotenciaisTable');
+            clientesPotenciais.forEach(cliente => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${cliente.cliente}</td>
+                    <td>${cliente.percentual_chance}</td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function getRandomDate() {
+            const startDate = new Date(2000, 0, 1); // 01/01/2000
+            const endDate = new Date(2024, 5, 10); // 10/06/2024 (junho é o mês 5 porque os meses são indexados de 0 a 11)
+            
+            const randomTime = startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime());
+            const randomDate = new Date(randomTime);
+            
+            const day = String(randomDate.getDate()).padStart(2, '0');
+            const month = String(randomDate.getMonth() + 1).padStart(2, '0'); // Adiciona 1 porque os meses são indexados de 0 a 11
+            const year = randomDate.getFullYear();
+            
+            return `${day}/${month}/${year}`;
+        }
+
+        function loadDetalhesCliente(clienteId) {
+            const cliente = usuarios.find(u => u.user_id === clienteId);
+            const content = document.getElementById('content');
+
+            content.innerHTML = `
+                <h2>Detalhes do Cliente: ${cliente.name}</h2>
+                <p><strong>Cliente desde:</strong> ${getRandomDate()}</p>
+                <p><strong>Idade:</strong> ${cliente.age}</p>
+                <p><strong>Localização:</strong> ${cliente.location}</p>
+                <p><strong>Estado Civil:</strong> ${cliente.estado_civil}</p>
+                <p><strong>Profissão:</strong> ${cliente.profissao}</p>
+                <p><strong>Telefone:</strong> ${cliente.telefone}</p>
+                <p><strong>Vendedor:</strong> ${cliente.vendedor}</p>
+                <p><strong>Número de Apólices:</strong> ${cliente.num_policies}</p>
+                <h3>Produtos Contratados</h3>
+                <ul>
+                    ${cliente.produtos_contratados.map(produto => `<li>${produto}</li>`).join('')}
+                </ul>
+               
+
+                <h3>Produtos Potenciais</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Selecionar</th>
+                            <th>Produto</th>
+                            <th>Percentual de Chance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="produtosPotenciaisTable">
+                    </tbody>
+                </table>
+                <a href="#" onclick="loadContent('clientes')" class="link">Voltar</a>
+            `;
+
+            loadProdutosPotenciais(clienteId);
+        }
+
+        function loadProdutosPotenciais(clienteId) {
+            // Exemplo de dados fictícios com mais produtos e destaque no percentual de chance
+            function gerarPercentualAleatorio() {
+                return Math.floor(Math.random() * (95 - 20 + 1)) + 20;
+            }
+
+            const produtosPotenciais = [
+                {"produto": "Seguro de Vida", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Seguro Saúde", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Seguro Automóvel", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Plano de Previdência", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Seguro Residencial", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Seguro de Viagem", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Seguro Empresarial", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Seguro de Vida Coletivo", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Plano de Saúde Familiar", "percentual_chance": gerarPercentualAleatorio()},
+                {"produto": "Seguro de Acidentes Pessoais", "percentual_chance": gerarPercentualAleatorio()}
+            ];
+
+            // Ordenar a lista de produtos de forma decrescente com base em 'percentual_chance'
+            produtosPotenciais.sort((a, b) => b.percentual_chance - a.percentual_chance);
+
+            // Encontrar o cliente
+            const cliente = usuarios.find(u => u.user_id === clienteId);
+
+            // Filtrar os produtos potenciais para remover os já contratados
+            const produtosPotenciaisFiltrados = produtosPotenciais.filter(produto => {
+                return !cliente.produtos_contratados.includes(produto.produto);
+            });
+
+            // Renderizar a tabela de produtos potenciais filtrados
+            // const table = document.getElementById('produtosPotenciaisTable');
+            // produtosPotenciaisFiltrados.forEach(produto => {
+            //     const cor = `hsl(${(produto.percentual_chance / 100) * 120}, 70%, 50%)`;
+            //     const tr = document.createElement('tr');
+            //     tr.innerHTML = `
+            //         <td>${produto.produto}</td>
+            //         <td style="color: ${cor}; font-weight: bold;">${produto.percentual_chance}%</td>
+            //     `;
+            //     table.appendChild(tr);
+            // });
+
+            const table = document.getElementById('produtosPotenciaisTable');
+            // produtosPotenciaisFiltrados.forEach(produto => {
+            //     const cor = `hsl(${(produto.percentual_chance / 100) * 120}, 70%, 50%)`;
+            //     let icon;
+
+            //     if (produto.percentual_chance >= 65) {
+            //         icon = `<span style="color: green;">&#9650;</span>`; // Seta para cima verde (&#9650;)
+            //     } else if (produto.percentual_chance >= 40 && produto.percentual_chance < 65) {
+            //         icon = `<span style="color: yellow;">&#11044;</span>`; // Bolinha amarela (&#9899;)
+            //     } else {
+            //         icon = `<span style="color: red;">&#9660;</span>`; // Seta para baixo vermelha (&#9660;)
+            //     }
+
+            //     const tr = document.createElement('tr');
+            //     tr.innerHTML = `
+            //         <td>${produto.produto}</td>
+            //         <td style="color: ${cor}; font-weight: bold;">
+            //             ${produto.percentual_chance}% ${icon}
+            //         </td>
+            //     `;
+            //     table.appendChild(tr);
+            // });
+
+            function toggleStrikethrough(checkbox) {
+                const tr = checkbox.closest('tr');
+                if (checkbox.checked) {
+                    tr.querySelectorAll('td').forEach(td => {
+                        td.style.textDecoration = 'line-through';
+                    });
+                } else {
+                    tr.querySelectorAll('td').forEach(td => {
+                        td.style.textDecoration = 'none';
+                    });
+                }
+            }
+
+            // const table = document.getElementById('produtosPotenciaisTable');
+            produtosPotenciaisFiltrados.forEach(produto => {
+                const cor = `hsl(${(produto.percentual_chance / 100) * 120}, 70%, 50%)`;
+                let icon;
+
+                if (produto.percentual_chance >= 65) {
+                    icon = `<span style="color: green;">&#9650;</span>`; // Seta para cima verde (&#9650;)
+                } else if (produto.percentual_chance >= 40 && produto.percentual_chance < 65) {
+                    icon = `<span style="color: yellow;">&#11044;</span>`; // Bolinha amarela (&#11044;)
+                } else {
+                    icon = `<span style="color: red;">&#9660;</span>`; // Seta para baixo vermelha (&#9660;)
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="checkbox" onchange="toggleStrikethrough(this)"></td>
+                    <td>${produto.produto}</td>
+                    <td style="color: ${cor}; font-weight: bold;">
+                        ${produto.percentual_chance}% ${icon}
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+
+            
+
+            // produtosPotenciaisFiltrados.forEach(produto => {
+            //     const cor = `hsl(${(produto.percentual_chance / 100) * 120}, 70%, 50%)`;
+            //     const tr = document.createElement('tr');
+            //     tr.innerHTML = `
+            //         <td><input type="checkbox" onchange="toggleStrikethrough(this)"></td>
+            //         <td>${produto.produto}</td>
+            //         <td style="color: ${cor}; font-weight: bold;">${produto.percentual_chance}%</td>
+            //     `;
+            //     table.appendChild(tr);
+            // });
+
+            // function toggleStrikethrough(checkbox) {
+            //     const tr = checkbox.closest('tr');
+            //     if (checkbox.checked) {
+            //         tr.querySelectorAll('td').forEach(td => {
+            //             td.style.textDecoration = 'line-through';
+            //         });
+            //     } else {
+            //         tr.querySelectorAll('td').forEach(td => {
+            //             td.style.textDecoration = 'none';
+            //         });
+            //     }
+            // }
+
+            // const table = document.getElementById('produtosPotenciaisTable');
+            // produtosPotenciaisFiltrados.forEach(produto => {
+            //     const cor = `hsl(${(produto.percentual_chance / 100) * 120}, 70%, 50%)`;
+            //     let icon;
+
+            //     if (produto.percentual_chance >= 65) {
+            //         icon = '⬆️'; // Seta para cima verde
+            //     } else if (produto.percentual_chance >= 40 && produto.percentual_chance < 65) {
+            //         icon = '🟡'; // Bolinha amarela
+            //     } else {
+            //         icon = '⬇️'; // Seta para baixo vermelha
+            //     }
+
+            //     const tr = document.createElement('tr');
+            //     tr.innerHTML = `
+            //         <td>${produto.produto}</td>
+            //         <td style="color: ${cor}; font-weight: bold;">
+            //             ${produto.percentual_chance}% ${icon}
+            //         </td>
+            //     `;
+            //     table.appendChild(tr);
+            // });
+
+            // const table = document.getElementById('produtosPotenciaisTable');
+            // produtosPotenciais.forEach(produto => {
+            //     const cor = `hsl(${(produto.percentual_chance / 100) * 120}, 70%, 50%)`;
+            //     const tr = document.createElement('tr');
+            //     tr.innerHTML = `
+            //         <td>${produto.produto}</td>
+            //         <td style="color: ${cor}; font-weight: bold;">${produto.percentual_chance}%</td>
+            //     `;
+            //     table.appendChild(tr);
+            // });
+        }
+    </script>        
+</body>
+</html>
