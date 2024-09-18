@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso de Eletrocardiograma</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+        /* Estilo do menu fixo à esquerda */
+        .menu {
+            width: 20%;
+            background-color: #f0f0f0;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            border-right: 1px solid #ccc;
+        }
+        .menu h2 {
+            color: #0275d8;
+            margin-bottom: 20px;
+        }
+        .menu ul {
+            list-style: none;
+        }
+        .menu ul li {
+            margin-bottom: 10px;
+        }
+        .menu ul li a {
+            text-decoration: none;
+            color: #0275d8;
+        }
+        /* Estilo do conteúdo do vídeo */
+        .content {
+            margin-left: 20%;
+            padding: 20px;
+            width: 80%;
+        }
+        .video-placeholder {
+            width: 100%;
+            height: 400px;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+        }
+        .video-placeholder p {
+            color: #555;
+            font-size: 18px;
+        }
+        /* Campo de select para perguntas à IA */
+        .ai-prompt {
+            margin-top: 20px;
+        }
+        .ai-prompt label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #0275d8;
+        }
+        .ai-prompt select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        /* Estilo das perguntas e respostas */
+        .qa-section {
+            margin-top: 20px;
+        }
+        .qa-section .question {
+            font-weight: bold;
+            color: #0275d8;
+        }
+        .qa-section .answer {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Menu fixo à esquerda -->
+<div class="menu">
+    <h2>Curso de ECG</h2>
+    <ul>
+        <li><strong>Sessão 1: Introdução ao ECG</strong></li>
+        <ul>
+            <li><a href="#">1.1 O que é um ECG?</a></li>
+            <li><a href="#">1.2 Importância do ECG</a></li>
+            <li><a href="#">1.3 Funcionamento do ECG</a></li>
+        </ul>
+        <li><strong>Sessão 2: Interpretação do ECG</strong></li>
+        <ul>
+            <li><a href="#">2.1 Ondas do ECG</a></li>
+            <li><a href="#">2.2 Análise do Ritmo</a></li>
+            <li><a href="#">2.3 Anormalidades Comuns</a></li>
+        </ul>
+    </ul>
+</div>
+
+<!-- Conteúdo à direita -->
+<div class="content">
+    <div class="video-placeholder">
+        <p>
+            <iframe width="640" height="360" src="https://player.elai.io/66eb1cc2f56fd928e889a8ae"
+                title="Elai.io - Generate L&D and marketing videos with humans from just text" frameborder="0" allow="autoplay" allowfullscreen scrolling="no">
+            </iframe>
+        </p>
+    </div>
+
+    <!-- Campo de select para inserir perguntas para a IA -->
+    <div class="ai-prompt">
+        <label for="aiQuestion">Selecione uma pergunta sobre o conteúdo do curso:</label>
+        <select id="aiQuestion">
+            <option value="" disabled selected>Escolha uma pergunta...</option>
+            <option value="ecg">O que é um ECG?</option>
+            <option value="interpretar">Como interpretar as ondas P, QRS e T?</option>
+            <option value="importancia">Qual a importância do ECG na prática clínica?</option>
+        </select>
+    </div>
+
+    <!-- Seção onde as perguntas e respostas dinâmicas aparecerão -->
+    <div class="qa-section" id="qaSection"></div>
+
+</div>
+
+<!-- JavaScript para controlar as respostas dinâmicas -->
+<script>
+    const selectField = document.getElementById('aiQuestion');
+    const qaSection = document.getElementById('qaSection');
+
+    // Função para exibir as respostas com base na seleção
+    selectField.addEventListener('change', function() {
+        const selectedValue = selectField.value;
+        let questionText = '';
+        let answerText = '';
+
+        // Verifica qual pergunta foi selecionada e define a resposta correspondente
+        if (selectedValue === 'ecg') {
+            questionText = 'O que é um ECG?';
+            answerText = 'Um eletrocardiograma (ECG) é um teste que registra a atividade elétrica do coração ao longo de um período de tempo.';
+        } else if (selectedValue === 'interpretar') {
+            questionText = 'Como interpretar as ondas P, QRS e T?';
+            answerText = 'As ondas P, QRS e T representam a despolarização e repolarização das câmaras do coração. A onda P indica a despolarização atrial, o complexo QRS indica a despolarização ventricular, e a onda T representa a repolarização ventricular.';
+        } else if (selectedValue === 'importancia') {
+            questionText = 'Qual a importância do ECG na prática clínica?';
+            answerText = 'O ECG é fundamental para diagnosticar várias condições cardíacas, incluindo arritmias, infartos e outros problemas que afetam o ritmo ou a função elétrica do coração.';
+        }
+
+        // Exibe a pergunta e a resposta na tela
+        const newQAItem = document.createElement('div');
+        newQAItem.classList.add('qa-item');
+        newQAItem.innerHTML = `
+            <p class="question">Pergunta: ${questionText}</p>
+            <p class="answer">Resposta: ${answerText}</p>
+        `;
+        
+        // Adiciona o item à seção de perguntas e respostas
+        qaSection.appendChild(newQAItem);
+    });
+</script>
+
+</body>
+</html>

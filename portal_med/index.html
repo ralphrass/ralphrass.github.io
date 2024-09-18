@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Cursos de Medicina</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #0275d8;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+        }
+        .course-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .course-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            width: calc(33% - 40px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .course-card h3 {
+            color: #0275d8;
+        }
+        .course-card img {
+            width: 150px;
+            border-radius: 50%;
+        }
+        .course-details {
+            text-align: left;
+            margin-top: 15px;
+        }
+        .course-details li {
+            list-style-type: none;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .course-details li img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .price {
+            margin-top: 20px;
+        }
+        .price .original-price {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .price .discounted-price {
+            color: red;
+            font-weight: bold;
+        }
+        .price .installments {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Portal de Cursos de Medicina</h1>
+    <p>Avatares gerados por IA ensinando você</p>
+</header>
+
+<div class="container">
+    <h2>Cursos Disponíveis</h2>
+    <div class="course-list">
+        <div class="course-card">
+            <img src="avatar_ecg.png" alt="Instrutor ECG">
+            <h3>Eletrocardiograma</h3>
+            <p>Instrutor: Dr. Cardio, Avatar IA</p>
+            
+            <ul class="course-details">
+                <li><img src="completion.png" width="32" height="32" alt="Certificado Icon"> Certificado de conclusão</li>
+                <li><img src="clock.png" width="32" height="32" alt="Carga Horária Icon"> Carga horária de 30 horas</li>
+                <li><img src="aclock.png" width="32" height="32" alt="Período Icon"> Período de acesso até 1 ano após a aquisição</li>
+                <li><img src="online.png" width="32" height="32" alt="100% Online Icon"> 100% Online</li>
+            </ul>
+            
+            <div class="price">
+                <p class="original-price">De R$ 714,00</p>
+                <p class="discounted-price">Por R$ 499,80</p>
+                <p class="installments">Ou 10x de R$ 49,98 sem juros</p>
+                <p class="discounted-price">-30%</p>
+                <p class="discounted-price">Ou R$ 499,80 à vista no Pix</p>
+            </div>
+            
+            <a href="curso_ecg.html">Acessar Curso</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
