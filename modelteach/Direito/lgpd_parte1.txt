@@ -1,0 +1,177 @@
+Treinamento Básico sobre a LGPD para a Iniciativa Privada - entendendo a legislação
+
+Módulo 1 de 3
+
+Etapas da aula:
+1) Curso LGPD - começando pelo que não será tratado [ler tudo]
+2) Conceitos da LGPD - breve estudo do art. 5º [ler tudo]
+3) Sumário LGPD: Onde procurar/como procurar na lei? [ler tudo]
+4) Do tratamento de dados pessoais [ler o que está fora das tabelas]
+5) Do término do tratamento de dados [ler o que está fora das tabelas]
+
+Para leitura do avatar:
+
+Este é um curso básico sobre a Lei Geral de Proteção de Dados Pessoais (LGPD) focado no público que opera na ou com a iniciativa privada. O intento do curso, como treinamento básico, é o de apresentar a lei, sua estrutura, seus conceitos e ensinar o aluno a compreender como pesquisar na legislação.
+
+Por esse motivo, o principal material de apoio do texto é a própria LGPD, que será linkada para o aluno poder abrir e realizar a leitura e compreensão da mesma. O presente treinamento também tem como objetivo funcionar como uma medida educativa para ser aplicada pela iniciativa privada, especialmente para colaboradores que não trabalham com dados.
+
+1) Curso LGPD - começando pelo que não será tratado;
+
+Treinamento focado na iniciativa privada, especialmente para empresas e profissionais autônomos que buscam a adequação de suas operações.
+
+Para empresas que operam B2C (Business to Customer), importante a compreensão de que a adequação da operação possui especial importância para a segurança jurídica da operação.
+
+Por ser um curso introdutório, o trabalho do presente curso foca exclusivamente na compreensão da legislação em foco, a LGPD (Lei 13.709/2018). Além disso, é importante aclarar que o capítulo IV da Legislação, que versa sobre o tratamento de dados pessoais pelo poder público, não será abordado em nenhuma das fases desse curso.
+
+2) Conceitos da LGPD - breve estudo do art. 5º
+
+A LGPD, como é comum de muitas normas no Brasil, é uma legislação que possui uma explicação de alguns termos que são usados no texto da própria lei. Com o objetivo de facilitar a compreensão dos termos utilizados neste curso, passamos a descrever esses termos, que estão descritos nos incisos do artigo 5º da LGPD.
+
+I - dado pessoal: informação relacionada a pessoa natural identificada ou identificável;
+
+II - dado pessoal sensível: dado pessoal sobre origem racial ou étnica, convicção religiosa, opinião política, filiação a sindicato ou a organização de caráter religioso, filosófico ou político, dado referente à saúde ou à vida sexual, dado genético ou biométrico, quando vinculado a uma pessoa natural;
+
+III - dado anonimizado: dado relativo a titular que não possa ser identificado, considerando a utilização de meios técnicos razoáveis e disponíveis na ocasião de seu tratamento;
+
+IV - banco de dados: conjunto estruturado de dados pessoais, estabelecido em um ou em vários locais, em suporte eletrônico ou físico;
+
+V - titular: pessoa natural a quem se referem os dados pessoais que são objeto de tratamento;
+
+VI - controlador: pessoa natural ou jurídica, de direito público ou privado, a quem competem as decisões referentes ao tratamento de dados pessoais;
+
+VII - operador: pessoa natural ou jurídica, de direito público ou privado, que realiza o tratamento de dados pessoais em nome do controlador;
+
+VIII - encarregado: pessoa indicada pelo controlador e operador para atuar como canal de comunicação entre o controlador, os titulares dos dados e a Autoridade Nacional de Proteção de Dados (ANPD);
+
+IX - agentes de tratamento: o controlador e o operador;
+
+X - tratamento: toda operação realizada com dados pessoais, como as que se referem a coleta, produção, recepção, classificação, utilização, acesso, reprodução, transmissão, distribuição, processamento, arquivamento, armazenamento, eliminação, avaliação ou controle da informação, modificação, comunicação, transferência, difusão ou extração;
+
+
+3) Sumário LGPD: Onde procurar/como procurar na lei?
+
+A maior ferramenta de compreensão da legislação para o uso cotidiano é a pesquisa dos termos da legislação no próprio texto da lei, que está disponível no link: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm
+
+A melhor forma de compreender onde encontrar o que no texto da lei é a visualização do sumário da legislação, que permite a compreensão dos intervalos de dispositivos (artigos, parágrafos e incisos) que estão dentro de cada uma das divisões da Lei. Para tanto, vamos dar uma olhada na estrutura do sumário da Lei:
+
+CAPÍTULO I - DISPOSIÇÕES PRELIMINARES (art. 1º ao art. 6º)
+CAPÍTULO II - DO TRATAMENTO DE DADOS PESSOAIS (art. 7º ao art. 16)
+	Seção I Dos Requisitos para o Tratamento de Dados Pessoais (art. 7º ao art. 10)
+	Seção II Do Tratamento de Dados Pessoais Sensíveis (art. 11 ao art. 13)
+	Seção III Do Tratamento de Dados Pessoais de Crianças e de Adolescentes (art. 14)
+	Seção IV Do Término do Tratamento de Dados (art. 15 e 16)
+CAPÍTULO III - DOS DIREITOS DO TITULAR (art. 17 ao art. 22)
+CAPÍTULO IV DO TRATAMENTO DE DADOS PESSOAIS PELO PODER PÚBLICO (art. 23 ao art. 32)
+	Seção I Das Regras (art. 23 ao art. 30)
+	Seção II Da Responsabilidade (arts. 31 e 32)
+CAPÍTULO V - DA TRANSFERÊNCIA INTERNACIONAL DE DADOS (art. 33 ao art. 36)
+CAPÍTULO VI - DOS AGENTES DE TRATAMENTO DE DADOS PESSOAIS (art. 37 ao art. 46)
+	Seção I Do Controlador e do Operador (art. 37 ao art. 40)
+	Seção II Do Encarregado pelo Tratamento de Dados Pessoais (art. 41)
+	Seção III Da Responsabilidade e do Ressarcimento de Danos (art. 42 ao art. 45)
+CAPÍTULO VII - DA SEGURANÇA E DAS BOAS PRÁTICAS (art. 46 ao art. 51)
+	Seção I Da Segurança e do Sigilo de Dados (art. 46 ao art. 49)
+	Seção II Das Boas Práticas e da Governança (arts. 50 e 51)
+CAPÍTULO VIII - DA FISCALIZAÇÃO (art. 52 ao art. 54)
+	Seção I Das Sanções Administrativas (art. 52 ao art. 54)
+CAPÍTULO IX - DA AUTORIDADE NACIONAL DE PROTEÇÃO DE DADOS (ANPD) E DO CONSELHO NACIONAL DE PROTEÇÃO DE DADOS PESSOAIS E DA PRIVACIDADE (art. 55-A ao art. 16)
+	Seção I Da Autoridade Nacional de Proteção de Dados (ANPD) (art. 55-A ao art. 57)
+	Seção II Do Conselho Nacional de Proteção de Dados Pessoais e da Privacidade (arts. 58-A e 58-B)
+CAPÍTULO X - DISPOSIÇÕES FINAIS E TRANSITÓRIAS (art. 60 ao art. 65)
+
+4) Do tratamento de dados pessoais
+
+O artigo 7º da LGPD começa a definir as situações nas quais pode acontecer o tratamento de dados pessoais. Na lei, ainda vão ser definidos os casos nos quais pode ocorrer o tratamento de dados pessoais sensíveis (artigo 11) e as definições que qualificam o tratamento de dados pessoais de crianças e adolescentes (artigo 14).
+Todos os referidos rols de hipóteses de tratamento de dados pessoais são rols taxativos (em oposição à definição de um rol exemplificativo), o que significa que eles definem uma lista fechada de situações nas quais é permitido o tratamento de dados pessoais. Verificamos rol taxativo dentro do artigo 7º e do artigo 11 da LGPD, que definem as hipóteses de tratamento de dados pessoais e dados pessoais sensíveis. O artigo 14, que lida com dados pessoais de crianças ou adolescentes, apresenta uma série de quesitos extras para o tratamento de tais dados pessoais, como veremos abaixo.
+
+Para todos os fins, isso significa que os dados pessoais podem ser tratados nos casos que se enquadrem dentro das definições do artigo 7º caso não se enquadrem no conceito de dados pessoais sensíveis. Os dados precisam se enquadrar dentro das permissões do artigo 11 quando forem qualificados como sensíveis. Por último, quando o tratamento for de dados pessoais de crianças ou adolescentes, o tratamento deve obedecer os dispositivos definidos no artigo 14. 
+
+A descrição de cada um dos itens definidos nos artigos mencionados acima será feita na segunda etapa do curso. Por ora, passamos à leitura dos incisos do caput dos artigos 7º e 11 e do artigo 14, todos da LGPD.
+
+Art. 7º O tratamento de dados pessoais somente poderá ser realizado nas seguintes hipóteses:
+
+I - mediante o fornecimento de consentimento pelo titular;
+
+II - para o cumprimento de obrigação legal ou regulatória pelo controlador;
+
+III - pela administração pública, para o tratamento e uso compartilhado de dados necessários à execução de políticas públicas previstas em leis e regulamentos ou respaldadas em contratos, convênios ou instrumentos congêneres, observadas as disposições do Capítulo IV desta Lei;
+
+IV - para a realização de estudos por órgão de pesquisa, garantida, sempre que possível, a anonimização dos dados pessoais;
+
+V - quando necessário para a execução de contrato ou de procedimentos preliminares relacionados a contrato do qual seja parte o titular, a pedido do titular dos dados;
+
+VI - para o exercício regular de direitos em processo judicial, administrativo ou arbitral, esse último nos termos da Lei nº 9.307, de 23 de setembro de 1996 (Lei de Arbitragem) ;
+
+VII - para a proteção da vida ou da incolumidade física do titular ou de terceiro;
+
+VIII - para a tutela da saúde, exclusivamente, em procedimento realizado por profissionais de saúde, serviços de saúde ou autoridade sanitária;      (Redação dada pela Lei nº 13.853, de 2019)      Vigência
+
+IX - quando necessário para atender aos interesses legítimos do controlador ou de terceiro, exceto no caso de prevalecerem direitos e liberdades fundamentais do titular que exijam a proteção dos dados pessoais; ou
+
+X - para a proteção do crédito, inclusive quanto ao disposto na legislação pertinente.
+Art. 11. O tratamento de dados pessoais sensíveis somente poderá ocorrer nas seguintes hipóteses:
+
+I - quando o titular ou seu responsável legal consentir, de forma específica e destacada, para finalidades específicas;
+
+II - sem fornecimento de consentimento do titular, nas hipóteses em que for indispensável para:
+
+a) cumprimento de obrigação legal ou regulatória pelo controlador;
+
+b) tratamento compartilhado de dados necessários à execução, pela administração pública, de políticas públicas previstas em leis ou regulamentos;
+
+c) realização de estudos por órgão de pesquisa, garantida, sempre que possível, a anonimização dos dados pessoais sensíveis;
+
+d) exercício regular de direitos, inclusive em contrato e em processo judicial, administrativo e arbitral, este último nos termos da Lei nº 9.307, de 23 de setembro de 1996 (Lei de Arbitragem) ;
+
+e) proteção da vida ou da incolumidade física do titular ou de terceiro;
+
+f) tutela da saúde, exclusivamente, em procedimento realizado por profissionais de saúde, serviços de saúde ou autoridade sanitária; ou        (Redação dada pela Lei nº 13.853, de 2019)      Vigência
+
+g) garantia da prevenção à fraude e à segurança do titular, nos processos de identificação e autenticação de cadastro em sistemas eletrônicos, resguardados os direitos mencionados no art. 9º desta Lei e exceto no caso de prevalecerem direitos e liberdades fundamentais do titular que exijam a proteção dos dados pessoais.
+Art. 14. O tratamento de dados pessoais de crianças e de adolescentes deverá ser realizado em seu melhor interesse, nos termos deste artigo e da legislação pertinente.
+
+§ 1º O tratamento de dados pessoais de crianças deverá ser realizado com o consentimento específico e em destaque dado por pelo menos um dos pais ou pelo responsável legal.
+
+§ 2º No tratamento de dados de que trata o § 1º deste artigo, os controladores deverão manter pública a informação sobre os tipos de dados coletados, a forma de sua utilização e os procedimentos para o exercício dos direitos a que se refere o art. 18 desta Lei.
+
+§ 3º Poderão ser coletados dados pessoais de crianças sem o consentimento a que se refere o § 1º deste artigo quando a coleta for necessária para contatar os pais ou o responsável legal, utilizados uma única vez e sem armazenamento, ou para sua proteção, e em nenhum caso poderão ser repassados a terceiro sem o consentimento de que trata o § 1º deste artigo.
+
+§ 4º Os controladores não deverão condicionar a participação dos titulares de que trata o § 1º deste artigo em jogos, aplicações de internet ou outras atividades ao fornecimento de informações pessoais além das estritamente necessárias à atividade.
+
+§ 5º O controlador deve realizar todos os esforços razoáveis para verificar que o consentimento a que se refere o § 1º deste artigo foi dado pelo responsável pela criança, consideradas as tecnologias disponíveis.
+
+§ 6º As informações sobre o tratamento de dados referidas neste artigo deverão ser fornecidas de maneira simples, clara e acessível, consideradas as características físico-motoras, perceptivas, sensoriais, intelectuais e mentais do usuário, com uso de recursos audiovisuais quando adequado, de forma a proporcionar a informação necessária aos pais ou ao responsável legal e adequada ao entendimento da criança.
+
+5) Do término do tratamento de dados
+
+O último item que abordaremos nesta aula está definido na LGPD dentro dos artigos 15 e 16. O término do tratamento de dados é uma seção da legislação de especial importância para o compliance de empresas, não só porque o descumprimento dos dispositivos ali previstos é relativamente simples, mas porque eles possuem certa carga de complexidade no ato de adequação.
+
+O artigo 15 da LGPD define quando deve ocorrer o fim do tratamento de dados pessoais. O dispositivo faz isso apresentando as hipóteses nas quais o término do tratamento ocorre. Os marcos definidos nas hipóteses do dispositivo findam a permissão das hipóteses de tratamento dos dispositivos analisados acima (artigos 7º e 11), e indicam o momento a partir do qual os dados pessoais devem ser eliminados.
+
+É com base nesse dispositivo que as Políticas de Eliminação de Dados Pessoais devem ser redigidas. Tais políticas devem identificar quando ocorrem os casos mencionados nas hipóteses para fins de início do procedimento de eliminação de tais dados.
+
+As exceções para o ato de eliminação, por sua vez, é definido no artigo 16 da LGPD. Nele, são previstos quatro casos de possibilidade de conservação dos dados por parte dos agentes de tratamento. Esse dispositivo é especialmente importante para os agentes que fazem uso dos dados por motivos como a manutenção e estudo de métricas, ou têm intenção de manutenir o tratamento dos dados pessoais por outros motivos.
+
+Para finalizar a aula, passamos à leitura dos últimos dois dispositivos, sobre o término do tratamento de dados.
+
+Art. 15. O término do tratamento de dados pessoais ocorrerá nas seguintes hipóteses:
+
+I - verificação de que a finalidade foi alcançada ou de que os dados deixaram de ser necessários ou pertinentes ao alcance da finalidade específica almejada;
+
+II - fim do período de tratamento;
+
+III - comunicação do titular, inclusive no exercício de seu direito de revogação do consentimento conforme disposto no § 5º do art. 8º desta Lei, resguardado o interesse público; ou
+
+IV - determinação da autoridade nacional, quando houver violação ao disposto nesta Lei.
+
+Art. 16. Os dados pessoais serão eliminados após o término de seu tratamento, no âmbito e nos limites técnicos das atividades, autorizada a conservação para as seguintes finalidades:
+
+I - cumprimento de obrigação legal ou regulatória pelo controlador;
+
+II - estudo por órgão de pesquisa, garantida, sempre que possível, a anonimização dos dados pessoais;
+
+III - transferência a terceiro, desde que respeitados os requisitos de tratamento de dados dispostos nesta Lei; ou
+
+IV - uso exclusivo do controlador, vedado seu acesso por terceiro, e desde que anonimizados os dados.
+
+Nos vemos na próxima aula!
