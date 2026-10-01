@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar · CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --ink:#151D2A; --muted:#566174; --line:#D7DCE4;
+  --accent:#1D4F8F; --accent-ink:#FFFFFF; --bad:#BE3A2E;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Instrument Sans","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0E131A; --surface:#161C25; --ink:#E5EAF1; --muted:#9AA5B5; --line:#2A3341;
+  --accent:#8FB2EC; --accent-ink:#0D1420; --bad:#EE7F72; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body);display:grid;place-items:center;padding:24px 16px}
+[hidden]{display:none!important}
+.card{width:min(420px,100%);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px 26px;display:grid;gap:18px}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:34px;height:34px;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);border-radius:9px 9px 9px 2px;font:700 18px/1 var(--f-display)}
+h1{margin:0;font:700 26px/1.1 var(--f-display);letter-spacing:-.015em}
+p{margin:0;color:var(--muted)}
+form{display:grid;gap:12px}
+label{display:grid;gap:5px;font-size:13px;font-weight:600;color:var(--muted)}
+input{font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);width:100%}
+input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+button{font:600 15px/1 var(--f-body);padding:12px 16px;border-radius:8px;border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.err{color:var(--bad);font-size:14px;font-weight:600}
+.switch{font-size:14px;color:var(--muted);text-align:center}
+.switch a{color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="brand"><span class="mark">C</span><h1 id="titulo">Entrar</h1></div>
+
+  <form id="f-entrar">
+    <label>E-mail<input id="e-email" type="email" autocomplete="email" required></label>
+    <label>Senha<input id="e-senha" type="password" autocomplete="current-password" required></label>
+    <p class="err" id="e-err" hidden></p>
+    <button id="e-btn">Entrar</button>
+  </form>
+
+  <form id="f-cadastro" hidden>
+    <p>Crie a conta da sua corretora. Você será o responsável por ela.</p>
+    <label>Nome da corretora<input id="c-corretora" required autocomplete="organization"></label>
+    <label>Seu nome<input id="c-nome" required autocomplete="name"></label>
+    <label>E-mail<input id="c-email" type="email" required autocomplete="email"></label>
+    <label>Senha (mínimo 8 caracteres)<input id="c-senha" type="password" minlength="8" required autocomplete="new-password"></label>
+    <p class="err" id="c-err" hidden></p>
+    <button id="c-btn">Criar conta</button>
+  </form>
+
+  <p class="switch" id="sw" hidden></p>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+let aberto=false;
+function modo(cad){
+  $('#f-entrar').hidden=cad;$('#f-cadastro').hidden=!cad;$('#titulo').textContent=cad?'Criar conta':'Entrar';
+  $('#sw').hidden=!aberto;
+  $('#sw').innerHTML=cad?'Já tem conta? <a id="go">Entrar</a>':'Corretora nova? <a id="go">Criar conta</a>';
+  $('#go').onclick=()=>modo(!cad);
+}
+async function enviar(url,body,err,btn){
+  $(err).hidden=true;$(btn).disabled=true;
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(j.erro||'Não foi possível continuar. Tente de novo.');
+    location.href='/';
+  }catch(e){$(err).textContent=e.message;$(err).hidden=false;$(btn).disabled=false}
+}
+$('#f-entrar').addEventListener('submit',e=>{e.preventDefault();enviar('/api/entrar',{email:$('#e-email').value,senha:$('#e-senha').value},'#e-err','#e-btn')});
+$('#f-cadastro').addEventListener('submit',e=>{e.preventDefault();enviar('/api/cadastro',{corretora:$('#c-corretora').value,nome:$('#c-nome').value,email:$('#c-email').value,senha:$('#c-senha').value},'#c-err','#c-btn')});
+fetch('/api/eu').then(r=>{if(r.ok)location.href='/'});
+fetch('/api/config').then(r=>r.json()).then(c=>{aberto=!!c.cadastroAberto;modo(false)}).catch(()=>modo(false));
+</script>
+</body>
+</html>
