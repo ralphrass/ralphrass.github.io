@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Viewer</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #viewer {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #222;
+    }
+
+    #controls {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      background: rgba(0,0,0,0.85);
+      border-radius: 12px;
+      transition: opacity 0.5s;
+    }
+
+    #controls.hidden {
+      opacity: 0;
+    }
+
+    button {
+      background: #333;
+      color: white;
+      border: 1px solid #666;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:focus {
+      outline: 3px solid #fff;
+    }
+
+    #page {
+      font-size: 14px;
+      min-width: 100px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="viewer">
+    <iframe id="pdf"></iframe>
+  </div>
+
+  <div id="controls">
+    <button onclick="changePage(-1)">◀</button>
+    <span id="page">Página 1</span>
+    <button onclick="changePage(1)">▶</button>
+    <button onclick="zoom(0.1)">+</button>
+    <button onclick="zoom(-0.1)">−</button>
+    <button onclick="toggleFullscreen()">⛶</button>
+  </div>
+
+  <script>
+    // Nome do PDF na raiz do repositório
+    const PDF_FILE = "magenta.pdf";
+
+    let currentPage = 1;
+    let scale = 1.0;
+    let hideTimer;
+
+    const pdf = document.getElementById("pdf");
+    const controls = document.getElementById("controls");
+
+    function updateViewer() {
+      pdf.src = PDF_FILE +
+        "#page=" + currentPage +
+        "&zoom=" + Math.round(scale * 100);
+
+      document.getElementById("page").textContent =
+        "Página " + currentPage;
+
+      showControls();
+    }
+
+    function changePage(direction) {
+      currentPage = Math.max(1, currentPage + direction);
+      updateViewer();
+    }
+
+    function zoom(value) {
+      scale = Math.min(2.5, Math.max(0.5, scale + value));
+      updateViewer();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    }
+
+    function showControls() {
+      controls.classList.remove("hidden");
+      clearTimeout(hideTimer);
+
+      hideTimer = setTimeout(() => {
+        controls.classList.add("hidden");
+      }, 4000);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "ArrowRight":
+        case "PageDown":
+          changePage(1);
+          break;
+
+        case "ArrowLeft":
+        case "PageUp":
+          changePage(-1);
+          break;
+
+        case "+":
+          zoom(0.1);
+          break;
+
+        case "-":
+          zoom(-0.1);
+          break;
+
+        case "f":
+        case "F":
+          toggleFullscreen();
+          break;
+      }
+
+      showControls();
+    });
+
+    document.addEventListener("mousemove", showControls);
+
+    updateViewer();
+  </script>
+
+</body>
+</html>
